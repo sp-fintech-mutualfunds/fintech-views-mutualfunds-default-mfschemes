@@ -1,4 +1,30 @@
-Form
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('tabs',
+            [
+                'component'                     : component,
+                'componentName'                 : componentName,
+                'componentId'                   : componentId,
+                'sectionId'                     : 'main',
+                'tabsId'                        : 'tabs',
+                'tabsStyle'                     : 'card-outline-tabs',
+                'tabsData'                      :
+                    [
+                        'navs'   :
+                        [
+                            'tabTitle'          : 'Navs',
+                            'tabInclude'        : 'schemes/form/navs'
+                        ],
+                        'info'   :
+                        [
+                            'tabTitle'          : 'Info',
+                            'tabInclude'        : 'schemes/form/info'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>
 <script>
 
 </script>

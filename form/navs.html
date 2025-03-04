@@ -1,61 +1,71 @@
 <!-- htmlhint tag-pair:false -->
 {% set timelineButtons = [] %}
 {% if scheme['navs']['navs_chunks'] is defined %}
-    {% if scheme['navs']['navs_chunks']['week'] is defined %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'one-week' : [
-                    'title'                   : '1W',
-                    'type'                    : 'primary',
-                    'value'                   : 'one-week',
-                    'disabled'                : true
+    {% if scheme['navs']['navs_chunks']['week'] is defined and scheme['navs']['navs_chunks']['week']|length > 0 %}
+        {% if scheme['navs']['navs_chunks']['week']|length != scheme['navs']['navs_chunks']['all']|length %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'one-week' : [
+                        'title'                   : '1W',
+                        'type'                    : 'primary',
+                        'value'                   : 'one-week',
+                        'disabled'                : true
+                    ]
                 ]
-            ]
-        ) %}
+            ) %}
+        {% endif %}
     {% endif %}
-    {% if scheme['navs']['navs_chunks']['month'] is defined %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'one-month' : [
-                    'title'                   : '1M',
-                    'type'                    : 'primary',
-                    'value'                   : 'one-month'
+    {% if scheme['navs']['navs_chunks']['month'] is defined and scheme['navs']['navs_chunks']['month']|length > 0 %}
+        {% if scheme['navs']['navs_chunks']['month']|length != scheme['navs']['navs_chunks']['all']|length %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'one-month' : [
+                        'title'                   : '1M',
+                        'type'                    : 'primary',
+                        'value'                   : 'one-month'
+                    ]
                 ]
-            ]
-        ) %}
+            ) %}
+        {% endif %}
     {% endif %}
-    {% if scheme['navs']['navs_chunks']['year'] is defined %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'one-year' : [
-                    'title'                   : '1Y',
-                    'type'                    : 'primary',
-                    'value'                   : 'one-year'
+    {% if scheme['navs']['navs_chunks']['year'] is defined and scheme['navs']['navs_chunks']['year']|length > 0 %}
+        {% if scheme['navs']['navs_chunks']['year']|length != scheme['navs']['navs_chunks']['all']|length %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'one-year' : [
+                        'title'                   : '1Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'one-year'
+                    ]
                 ]
-            ]
-        ) %}
+            ) %}
+        {% endif %}
     {% endif %}
-    {% if scheme['navs']['navs_chunks']['threeYear'] is defined %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'three-year' : [
-                    'title'                   : '3Y',
-                    'type'                    : 'primary',
-                    'value'                   : 'three-year'
+    {% if scheme['navs']['navs_chunks']['threeYear'] is defined and scheme['navs']['navs_chunks']['threeYear']|length > 0 %}
+        {% if scheme['navs']['navs_chunks']['threeYear']|length != scheme['navs']['navs_chunks']['all']|length %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'three-year' : [
+                        'title'                   : '3Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'three-year'
+                    ]
                 ]
-            ]
-        ) %}
+            ) %}
+        {% endif %}
     {% endif %}
-    {% if scheme['navs']['navs_chunks']['fiveYear'] is defined %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'five-year' : [
-                    'title'                   : '5Y',
-                    'type'                    : 'primary',
-                    'value'                   : 'five-year'
+    {% if scheme['navs']['navs_chunks']['fiveYear'] is defined and scheme['navs']['navs_chunks']['fiveYear']|length > 0 %}
+        {% if scheme['navs']['navs_chunks']['fiveYear']|length != scheme['navs']['navs_chunks']['all']|length %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'five-year' : [
+                        'title'                   : '5Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'five-year'
+                    ]
                 ]
-            ]
-        ) %}
+            ) %}
+        {% endif %}
     {% endif %}
     {% set timelineButtons = array_merge(timelineButtons,
         [

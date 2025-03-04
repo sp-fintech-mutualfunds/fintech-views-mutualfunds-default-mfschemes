@@ -1,4 +1,4 @@
-<!-- htmlhint tag-pair:false -->
+<!-- htmlhint tag-pair:false --><!-- htmlmin:ignore -->
 {% set timelineButtons = [] %}
 {% if scheme['navs']['navs_chunks'] is defined %}
     {% if scheme['navs']['navs_chunks']['week'] is defined and scheme['navs']['navs_chunks']['week']|length > 0 %}
@@ -78,7 +78,7 @@
     ) %}
 {% endif %}
 <div class="row">
-    <div class="col">
+    <div id="timeline-buttons" class="col" hidden>
         {{adminltetags.useTag('buttons',
             [
                 'component'                         : component,
@@ -184,13 +184,23 @@
     </div>
 </div>
 {% if navsHtml != '' %}
-<div class="row">
+<div class="row" id="timeline-chart" hidden>
     <div class="col">
         <canvas id="navsChart" style="max-height:400px;"></canvas>
     </div>
 </div>
+<div class="row text-center" id="timeline-loader">
+    <div class="col">
+        <i class="fa fa-cog fa-spin"></i> Loading chart and NAV table...
+    </div>
+</div>
+<div class="row text-center" id="timeline-import" hidden>
+    <div class="col">
+        <i class="fa fa-cog fa-spin"></i> Importing all available NAV data...
+    </div>
+</div>
 <hr>
-<div class="row">
+<div class="row" id="navs-table" hidden>
     <div class="col">
         <table id="{{componentId}}-{{sectionId}}-navs-table" class="table table-sm table-hover responsive nowrap mb-0" width="100%" cellspacing="0">
             <thead>
@@ -438,7 +448,18 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                                 pointRadius: 0
                             }
                         ]
-                    }
+                    },
+                    plugins : [
+                        {
+                            afterRender: function(chart, options) {
+                                $('#timeline-buttons').attr('hidden', false);
+                                $('#timeline-loader').attr('hidden', true);
+                                $('#import-loader').attr('hidden', true);
+                                $('#timeline-chart').attr('hidden', false);
+                                $('#navs-table').attr('hidden', false);
+                            }
+                        }
+                    ]
                 }
             );
         })();
@@ -508,6 +529,11 @@ dataCollectionSectionForm['funcs']['init'] = function() {
         $(thisButton).addClass('disabled');
         $(thisButton).children('i').attr('hidden', false);
 
+        $('#timeline-buttons').attr('hidden', true);
+        $('#timeline-import').attr('hidden', false);
+        $('#timeline-chart').attr('hidden', true);
+        $('#navs-table').attr('hidden', true);
+
         var postData = { };
         postData[$('#security-token').attr('name')] = $('#security-token').val();
         postData['get_all_navs'] = true;
@@ -516,6 +542,11 @@ dataCollectionSectionForm['funcs']['init'] = function() {
         $.post('{{links.url("mf/extractdata/getAllNavData")}}', postData, function(response) {
             $(thisButton).removeClass('disabled');
             $(thisButton).children('i').attr('hidden', true);
+
+            $('#timeline-buttons').attr('hidden', false);
+            $('#timeline-import').attr('hidden', true);
+            $('#timeline-chart').attr('hidden', false);
+            $('#navs-table').attr('hidden', false);
 
             if (response.responseCode == 0) {
                 paginatedPNotify('success', response.responseMessage);
@@ -560,3 +591,4 @@ setTimeout(function(){
     });
 }, 1000);
 </script>
+<!-- htmlmin:ignore -->

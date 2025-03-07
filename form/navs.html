@@ -251,6 +251,8 @@ dataCollectionSectionForm['vars']['navs'] = JSON.parse('{{navs}}');
 dataCollectionSectionForm['vars']['navs_chunks'] = JSON.parse('{{navsChunks}}');
 dataCollectionSectionForm['vars']['actions'] = { };
 dataCollectionSectionForm['vars']['navsChart'] = { };
+dataCollectionSectionForm['vars']['initData'] = [];
+dataCollectionSectionForm['vars']['initNavData'] = { };
 dataCollectionSectionForm['vars']['weekData'] = [];
 dataCollectionSectionForm['vars']['weekNavData'] = { };
 dataCollectionSectionForm['vars']['monthData'] = [];
@@ -267,13 +269,21 @@ dataCollectionSectionForm['funcs'] = { };
 dataCollectionSectionForm['funcs']['init'] = function() {
     if (Object.keys(dataCollectionSectionForm['vars']['navs']).length > 0) {
         (async function() {
+            var initDataObj, navsText;
+            if (Object.keys(dataCollectionSectionForm['vars']['navs_chunks']['week']).length > 0) {
+                initDataObj = dataCollectionSectionForm['vars']['navs_chunks']['week'];
+                navsText = 'NAVS (WEEK)';
+            } else {
+                initDataObj = dataCollectionSectionForm['vars']['navs_chunks']['all'];
+                navsText = 'ALL';
+            }
 
-            for (var weekDate in dataCollectionSectionForm['vars']['navs_chunks']['week']) {
-                dataCollectionSectionForm['vars']['weekNavData'] = { };
-                dataCollectionSectionForm['vars']['weekNavData']['date'] = weekDate;
-                dataCollectionSectionForm['vars']['weekNavData']['nav'] = dataCollectionSectionForm['vars']['navs_chunks']['week'][weekDate]['nav'];
+            for (var initData in initDataObj) {
+                dataCollectionSectionForm['vars']['initNavData'] = { };
+                dataCollectionSectionForm['vars']['initNavData']['date'] = initData;
+                dataCollectionSectionForm['vars']['initNavData']['nav'] = initDataObj[initData]['nav'];
 
-                dataCollectionSectionForm['vars']['weekData'].push(dataCollectionSectionForm['vars']['weekNavData']);
+                dataCollectionSectionForm['vars']['initData'].push(dataCollectionSectionForm['vars']['initNavData']);
             }
 
             if (dataCollectionSectionForm['vars']['navs_chunks']['week']) {
@@ -440,11 +450,11 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                         animation: false
                     },
                     data: {
-                        labels: dataCollectionSectionForm['vars']['weekData'].map(row => row.date),
+                        labels: dataCollectionSectionForm['vars']['initData'].map(row => row.date),
                         datasets: [
                             {
-                                label: 'NAVS (WEEK)',
-                                data: dataCollectionSectionForm['vars']['weekData'].map(row => row.nav),
+                                label: navsText,
+                                data: dataCollectionSectionForm['vars']['initData'].map(row => row.nav),
                                 pointRadius: 0
                             }
                         ]

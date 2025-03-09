@@ -1,10 +1,3 @@
-{% if scheme['id'] is defined %}
-    {% set schemeId = scheme['id'] %}
-    {% set title = 'Scheme (' ~ scheme['name'] ~ ')' %}
-{% else %}
-    {% set schemeId = '' %}
-    {% set title = 'New Scheme' %}
-{% endif %}
 {{adminltetags.useTag('content',
     [
         'component'                     : component,
@@ -16,17 +9,13 @@
         'cardHeader'                    : true,
         'cardFooter'                    : true,
         'cardType'                      : 'primary',
-        'cardIcon'                      : 'circle-dot',
-        'cardTitle'                     : title,
+        'cardIcon'                      : 'gears',
+        'cardTitle'                     : 'Module Settings',
         'cardAdditionalClass'           : 'rounded-0',
-        'cardBodyInclude'               : 'schemes/form',
-        'cardShowTools'                 : ['packageSettings'],
+        'cardBodyInclude'               : 'schemes/ms/form',
         'formButtons'                   :
         [
-            'updateButtonId'                : schemeId,
-            'addActionUrl'                  : 'mf/schemes/add',
-            'addSuccessRedirectUrl'         : 'mf/schemes',
-            'updateActionUrl'               : 'mf/schemes/update',
+            'updateActionUrl'               : 'mf/schemes/msupdate',
             'updateSuccessRedirectUrl'      : 'mf/schemes',
             'cancelActionUrl'               : 'mf/schemes',
             'closeActionUrl'                : 'mf/schemes'

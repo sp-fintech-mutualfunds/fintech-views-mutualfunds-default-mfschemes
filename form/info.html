@@ -1,1 +1,126 @@
-info
+{% set apiButtons = '' %}
+{% if apis|length > 0 %}
+    {% set apiButtons = apiButtons ~ '{' %}
+        {% for apiKey, api in apis %}
+            {% set link = links.url('mf/schemes/importscheme/q/' ~ api['id'] ~ '/' ~ scheme['id']) %}
+            {% set apiButtons =
+                apiButtons ~ '"' ~ api['id'] ~ '-api" : {"title" : "' ~ api['category'] ~ ': ' ~ api['name'] ~ '","type" : "primary","url" : "' ~ link ~ '"}'
+            %}
+            {% if not loop.last %}
+                {% set apiButtons = apiButtons ~ ',' %}
+            {% endif %}
+        {% endfor %}
+    {% set apiButtons = apiButtons ~ '}' %}
+    {% set apiButtons = json_decode(apiButtons, true) %}
+{% else %}
+    {% set apiButtons = [] %}
+{% endif %}
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('buttons',
+            [
+                'componentId'                       : componentId,
+                'sectionId'                         : sectionId,
+                'buttonType'                        : 'DropdownSplitButtons',
+                'buttonLabel'                       : false,
+                'dropdownButtonId'                  : 'import-info',
+                'dropdownButtonTitle'               : 'Import Scheme Info',
+                'dropdownButtonIcon'                : 'download',
+                'dropdownButtonAdditionalClass'     : 'text-uppercase',
+                'dropdownAlign'                     : 'right',
+                'buttonPosition'                    : 'right',
+                'dropdowns'                         : apiButtons
+            ]
+        )}}
+    </div>
+</div>
+<script>
+/*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection Chart */
+var dataCollectionComponent, dataCollectionSection, dataCollectionSectionForm;
+if (!window['dataCollection']) {
+    window['dataCollection'] = { };
+}
+if (!window['dataCollection']['{{componentId}}']) {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'] = { };
+} else {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'];
+}
+if (!dataCollectionComponent['{{componentId}}-{{sectionId}}']) {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'] = { };
+} else {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'];
+}
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
+    dataCollectionSectionForm =
+        dataCollectionSection['{{componentId}}-{{sectionId}}-form'] = { };
+} else {
+    dataCollectionSectionForm =
+        dataCollectionSection['{{componentId}}-{{sectionId}}-form'];
+}
+
+dataCollectionSectionForm['funcs']['info'] = function() {
+    $('#{{componentId}}-{{sectionId}}-import-info').siblings('.dropdown-menu').children('a').each(function(index, api) {
+        $(api).off();
+        $(api).click(function(e) {
+            e.preventDefault();
+
+            var postData = { };
+            postData[$('#security-token').attr('name')] = $('#security-token').val();
+            var url = $(this).attr('href');
+            var urlArr = url.split('/q/');
+            url = urlArr[0];
+            var ids = urlArr[1].split('/');
+            postData['api_id'] = ids[0];
+            postData['scheme_id'] = ids[1];
+
+            $.post(url, postData, function(response) {
+                if (response.responseCode == 0) {
+                    paginatedPNotify('success', {
+                        'title' : response.responseMessage
+                    });
+                } else {
+                    paginatedPNotify('error', {
+                        'title' : response.responseMessage
+                    });
+                }
+                //
+                if (response.tokenKey && response.token) {
+                    $('#security-token').attr('name', response.tokenKey);
+                    $('#security-token').val(response.token);
+                }
+            }, 'json');
+        });
+    });
+}
+
+// dataCollectionSectionForm['funcs']['browse'] = function(url) {
+//     $('#{{componentId}}-{{sectionId}}-navs-link').attr('href', url);
+//     //eslint-disable-next-line
+//     console.log($('#{{componentId}}-{{sectionId}}-navs-link'));
+//     BazContentLoader.loadAjax($('#{{componentId}}-{{sectionId}}-navs-link'), {
+//         ajaxBefore                      : function () {
+//                                             Pace.restart();
+//                                             $("#baz-content").empty();
+//                                             $("#loader").attr('hidden', false);
+//                                         },
+//         ajaxFinished                    : function () {
+//                                             BazCore.updateBreadcrumb();
+//                                             $("#loader").attr('hidden', true);
+//                                         },
+//         ajaxError                       : function () {
+//                                             $("#loader").attr('hidden', true);
+//                                             BazCore.updateBreadcrumb();
+//                                         }
+//     });
+// }
+
+setTimeout(function(){
+    $(document).ready(function() {
+        dataCollectionSectionForm['funcs']['info']();
+    });
+}, 1000);
+</script>

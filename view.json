@@ -1,12 +1,12 @@
 {
 	"name" : "MfSchemes",
-	"display_name" : "SP Framework Fintech Mf Schemes View",
-	"description" : "<p>SP Framework Fintech Mf Schemes View</p>",
+	"display_name" : "Mutual Fund Schemes View",
+	"description" : "<p>Mutual Fund Schemes View</p>",
 	"module_type" : "views",
 	"app_type" : "fintech",
 	"category" : "mutualfunds",
-	"version" : "0.4.0",
-	"repo" : "https://github.com/sp-fintech/fintech-views-mutualfunds-default-mfschemes",
+	"version" : "0.5.0",
+	"repo" : "https://github.com/sp-fintech-mutualfunds/fintech-views-mutualfunds-default-mfschemes",
 	"dependencies" : 
 	{
 		"core" : 

@@ -1,4 +1,4 @@
-{% set apiButtons = '' %}
+{# {% set apiButtons = '' %}
 {% if apis|length > 0 %}
     {% set apiButtons = apiButtons ~ '{' %}
         {% for apiKey, api in apis %}
@@ -34,8 +34,56 @@
         )}}
     </div>
 </div>
+<hr>
+<div class="row" id="details">
+    <div class="col">
+        <div class="row">
+            <div class="col text-center">
+                <label class="text-uppercase">Information received from <span id="source">-</span></label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <label class="text-uppercase">Scheme Name: </label>
+                        <span id="scheme-name" class="text-uppercase">{{scheme['name']}}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="text-uppercase">Scheme ISIN: </label>
+                        <span id="scheme-name" class="text-uppercase">{{scheme['isin']}}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="text-uppercase">Scheme Objective: </label>
+                        <span id="investment_objective" class="text-uppercase">-</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="text-uppercase">Scheme AMC: </label>
+                        <span id="investment_objective" class="text-uppercase">{{scheme['amc']['name']}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col">
+                        <canvas id="ratings"></canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-uppercase text-center" id="crisil_rating">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-/*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection Chart */
+/*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection Chart Gauge */
 var dataCollectionComponent, dataCollectionSection, dataCollectionSectionForm;
 if (!window['dataCollection']) {
     window['dataCollection'] = { };
@@ -62,6 +110,31 @@ if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
         dataCollectionSection['{{componentId}}-{{sectionId}}-form'];
 }
 
+dataCollectionSectionForm['vars']['ratings'] = {
+    angle: -0.25,
+    lineWidth: 0.25,
+    radiusScale: 1,
+    pointer: {
+        length: 0.5,
+        strokeWidth: 0.031,
+        color: '#000000'
+    },
+    limitMax: false,
+    limitMin: false,
+    colorStart: '#6F6EA0',
+    colorStop: '#C0C0DB',
+    strokeColor: '#EEEEEE',
+    generateGradient: true,
+    highDpiSupport: true,
+    staticZones: [
+        {strokeStyle: "#18BC9C", min: 0, max: 30},
+        {strokeStyle: "#69D3BE", min: 30, max: 60},
+        {strokeStyle: "#F7BE65", min: 60, max: 90},
+        {strokeStyle: "#F39C12", min: 90, max: 120},
+        {strokeStyle: "#EF8A80", min: 120, max: 150},
+        {strokeStyle: "#E74C3C", min: 150, max: 180}
+    ]
+}
 dataCollectionSectionForm['funcs']['info'] = function() {
     $('#{{componentId}}-{{sectionId}}-import-info').siblings('.dropdown-menu').children('a').each(function(index, api) {
         $(api).off();
@@ -82,12 +155,16 @@ dataCollectionSectionForm['funcs']['info'] = function() {
                     paginatedPNotify('success', {
                         'title' : response.responseMessage
                     });
+
+                    if (response.responseData && response.responseData.details) {
+                        processResponse(response.responseData.details);
+                    }
                 } else {
                     paginatedPNotify('error', {
                         'title' : response.responseMessage
                     });
                 }
-                //
+
                 if (response.tokenKey && response.token) {
                     $('#security-token').attr('name', response.tokenKey);
                     $('#security-token').val(response.token);
@@ -95,6 +172,38 @@ dataCollectionSectionForm['funcs']['info'] = function() {
             }, 'json');
         });
     });
+
+
+    function processResponse(details) {
+        //eslint-disable-next-line
+        console.log(details);
+
+        if (details.crisil_rating) {
+            var gaugeValue = 0;
+
+            details.crisil_rating = details.crisil_rating.toLowerCase();
+
+            if (details.crisil_rating.startsWith('low to')) {//low to moderate
+                gaugeValue = 45;
+            } else if (details.crisil_rating.startsWith('low')) {//low to moderate
+                gaugeValue = 15;
+            } else if (details.crisil_rating.startsWith('moderately')) {//moderately high
+                gaugeValue = 105;
+            } else if (details.crisil_rating.startsWith('moderate')) {//moderate
+                gaugeValue = 75;
+            } else if (details.crisil_rating.startsWith('high')) {//high
+                gaugeValue = 135;
+            } else if (details.crisil_rating.startsWith('very')) {//very high
+                gaugeValue = 165;
+            }
+
+            var gauge = new Gauge(document.getElementById('ratings')).setOptions(dataCollectionSectionForm['vars']['ratings']); // create sexy gauge!
+            gauge.maxValue = 180;
+            gauge.setMinValue(0);
+            gauge.animationSpeed = 1;
+            gauge.set(gaugeValue);
+        }
+    }
 }
 
 // dataCollectionSectionForm['funcs']['browse'] = function(url) {
@@ -123,4 +232,4 @@ setTimeout(function(){
         dataCollectionSectionForm['funcs']['info']();
     });
 }, 1000);
-</script>
+</script> #}

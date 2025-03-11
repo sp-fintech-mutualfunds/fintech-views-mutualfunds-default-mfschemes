@@ -447,7 +447,11 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                 {
                     type: 'line',
                     options : {
-                        animation: false
+                        animation: false,
+                        interaction: {
+                            mode: 'nearest',
+                            intersect: false
+                        }
                     },
                     data: {
                         labels: dataCollectionSectionForm['vars']['initData'].map(row => row.date),

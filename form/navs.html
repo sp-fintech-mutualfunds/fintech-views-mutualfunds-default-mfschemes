@@ -67,6 +67,19 @@
             ) %}
         {% endif %}
     {% endif %}
+    {% if scheme['navs']['navs_chunks']['tenYear'] is defined and scheme['navs']['navs_chunks']['tenYear']|length > 0 %}
+        {% if scheme['navs']['navs_chunks']['tenYear']|length != scheme['navs']['navs_chunks']['all']|length %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'ten-year' : [
+                        'title'                   : '10Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'ten-year'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+    {% endif %}
     {% set timelineButtons = array_merge(timelineButtons,
         [
             'all' : [
@@ -93,6 +106,38 @@
             ]
         )}}
     </div>
+    <div id="datatype-buttons" class="col text-center" hidden>
+        {{adminltetags.useTag('buttons',
+            [
+                'component'                         : component,
+                'componentName'                     : componentName,
+                'componentId'                       : componentId,
+                'sectionId'                         : sectionId,
+                'buttonType'                        : 'ButtonGroup',
+                'buttonId'                          : 'datatype',
+                'groupButtonType'                   : 'radio',
+                'groupRadioButtonChecked'           : 'nav',
+                'buttons'                           :
+                [
+                    'nav' : [
+                        'title'                   : 'NAVS',
+                        'type'                    : 'primary',
+                        'value'                   : 'nav'
+                    ],
+                    'diff' : [
+                        'title'                   : 'DIFF',
+                        'type'                    : 'primary',
+                        'value'                   : 'diff'
+                    ],
+                    'diff_percent' : [
+                        'title'                   : 'PERCENT',
+                        'type'                    : 'primary',
+                        'value'                   : 'diff_percent'
+                    ]
+                ]
+            ]
+        )}}
+    </div>
     <div class="col">
         {{adminltetags.useTag('buttons',
             [
@@ -114,6 +159,7 @@
         )}}
     </div>
 </div>
+<br>
 {% set navs = json_encode([], 16) %}
 {% set navsChunks = json_encode([], 16) %}
 {% set navsHtml = '' %}
@@ -153,9 +199,35 @@
                     {% set navsArr['diff_percent'] = '<span class="text-' ~ color ~ '">' ~ navsArr['diff_percent'] ~ '</span>' %}
                 {% endif %}
             {% endif %}
+            {% if navsArr['diff_since_inception'] is not defined %}
+                {% set navsArr['diff_since_inception'] = '-' %}
+            {% else %}
+                {% set color = 'primary' %}
+                {% if navsArr['diff_since_inception'] > 0 %}
+                    {% set color = 'success' %}
+                {% else %}
+                    {% set color = 'danger' %}
+                {% endif %}
+
+                {% set navsArr['diff_since_inception'] = '<span class="text-' ~ color ~ '">' ~ navsArr['diff_since_inception'] ~ '</span>' %}
+            {% endif %}
+            {% if navsArr['diff_percent_since_inception'] is not defined %}
+                {% set navsArr['diff_percent_since_inception'] = '-' %}
+            {% else %}
+                {% set color = 'primary' %}
+                {% if navsArr['diff_percent_since_inception'] > 0 %}
+                    {% set color = 'success' %}
+                {% else %}
+                    {% set color = 'danger' %}
+                {% endif %}
+
+                {% set navsArr['diff_percent_since_inception'] = '<span class="text-' ~ color ~ '">' ~ navsArr['diff_percent_since_inception'] ~ '</span>' %}
+            {% endif %}
             {% set navsHtml = navsHtml ~
             '           <td>' ~ navsArr['diff'] ~ '</td>' ~
             '           <td>' ~ navsArr['diff_percent'] ~ '</td>' ~
+            '           <td>' ~ navsArr['diff_since_inception'] ~ '</td>' ~
+            '           <td>' ~ navsArr['diff_percent_since_inception'] ~ '</td>' ~
             '       </tr>' %}
         {% endif %}
     {% endfor %}
@@ -207,8 +279,10 @@
                 <tr>
                     <th class="text-uppercase">Date</th>
                     <th class="text-uppercase">Nav</th>
-                    <th class="text-uppercase">Difference</th>
-                    <th class="text-uppercase">Difference Percentage</th>
+                    <th class="text-uppercase">Diff (previous day)</th>
+                    <th class="text-uppercase">Diff %</th>
+                    <th class="text-uppercase">Diff (since inception)</th>
+                    <th class="text-uppercase">Diff % (since inception)</th>
                 </tr>
             </thead>
             <tbody>
@@ -263,8 +337,13 @@ dataCollectionSectionForm['vars']['threeYearData'] = [];
 dataCollectionSectionForm['vars']['threeYearNavData'] = { };
 dataCollectionSectionForm['vars']['fiveYearData'] = [];
 dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
+dataCollectionSectionForm['vars']['tenYearData'] = [];
+dataCollectionSectionForm['vars']['tenYearNavData'] = { };
 dataCollectionSectionForm['vars']['allData'] = [];
 dataCollectionSectionForm['vars']['allNavData'] = { };
+dataCollectionSectionForm['vars']['dataType'] = 'nav';
+dataCollectionSectionForm['vars']['timeline'] = 'week';
+
 dataCollectionSectionForm['funcs'] = { };
 dataCollectionSectionForm['funcs']['init'] = function() {
     if (Object.keys(dataCollectionSectionForm['vars']['navs']).length > 0) {
@@ -273,15 +352,17 @@ dataCollectionSectionForm['funcs']['init'] = function() {
             if (Object.keys(dataCollectionSectionForm['vars']['navs_chunks']['week']).length > 0) {
                 initDataObj = dataCollectionSectionForm['vars']['navs_chunks']['week'];
                 navsText = 'NAVS (WEEK)';
+                dataCollectionSectionForm['vars']['timeline'] = 'week';
             } else {
                 initDataObj = dataCollectionSectionForm['vars']['navs_chunks']['all'];
                 navsText = 'ALL';
+                dataCollectionSectionForm['vars']['timeline'] = 'all';
             }
 
             for (var initData in initDataObj) {
                 dataCollectionSectionForm['vars']['initNavData'] = { };
                 dataCollectionSectionForm['vars']['initNavData']['date'] = initData;
-                dataCollectionSectionForm['vars']['initNavData']['nav'] = initDataObj[initData]['nav'];
+                dataCollectionSectionForm['vars']['initNavData'][dataCollectionSectionForm['vars']['dataType']] = initDataObj[initData][dataCollectionSectionForm['vars']['dataType']];
 
                 dataCollectionSectionForm['vars']['initData'].push(dataCollectionSectionForm['vars']['initNavData']);
             }
@@ -294,7 +375,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             for (var weekDate in dataCollectionSectionForm['vars']['navs_chunks']['week']) {
                                 dataCollectionSectionForm['vars']['weekNavData'] = { };
                                 dataCollectionSectionForm['vars']['weekNavData']['date'] = weekDate;
-                                dataCollectionSectionForm['vars']['weekNavData']['nav'] = dataCollectionSectionForm['vars']['navs_chunks']['week'][weekDate]['nav'];
+                                dataCollectionSectionForm['vars']['weekNavData'][dataCollectionSectionForm['vars']['dataType']] = dataCollectionSectionForm['vars']['navs_chunks']['week'][weekDate][dataCollectionSectionForm['vars']['dataType']];
 
                                 dataCollectionSectionForm['vars']['weekData'].push(dataCollectionSectionForm['vars']['weekNavData']);
                             }
@@ -303,7 +384,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             chart.data.datasets = [
                                     {
                                         label: 'NAVS (WEEK)',
-                                        data: dataCollectionSectionForm['vars']['weekData'].map(row => row.nav),
+                                        data: dataCollectionSectionForm['vars']['weekData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
                                         pointRadius: 0
                                     }
                                 ];
@@ -320,7 +401,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             for (var monthDate in dataCollectionSectionForm['vars']['navs_chunks']['month']) {
                                 dataCollectionSectionForm['vars']['monthNavData'] = { };
                                 dataCollectionSectionForm['vars']['monthNavData']['date'] = monthDate;
-                                dataCollectionSectionForm['vars']['monthNavData']['nav'] = dataCollectionSectionForm['vars']['navs_chunks']['month'][monthDate]['nav'];
+                                dataCollectionSectionForm['vars']['monthNavData'][dataCollectionSectionForm['vars']['dataType']] = dataCollectionSectionForm['vars']['navs_chunks']['month'][monthDate][dataCollectionSectionForm['vars']['dataType']];
 
                                 dataCollectionSectionForm['vars']['monthData'].push(dataCollectionSectionForm['vars']['monthNavData']);
                             }
@@ -329,7 +410,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             chart.data.datasets = [
                                     {
                                         label: 'NAVS (MONTH)',
-                                        data: dataCollectionSectionForm['vars']['monthData'].map(row => row.nav),
+                                        data: dataCollectionSectionForm['vars']['monthData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
                                         pointRadius: 0
                                     }
                                 ];
@@ -346,7 +427,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             for (var yearDate in dataCollectionSectionForm['vars']['navs_chunks']['year']) {
                                 dataCollectionSectionForm['vars']['yearNavData'] = { };
                                 dataCollectionSectionForm['vars']['yearNavData']['date'] = yearDate;
-                                dataCollectionSectionForm['vars']['yearNavData']['nav'] = dataCollectionSectionForm['vars']['navs_chunks']['year'][yearDate]['nav'];
+                                dataCollectionSectionForm['vars']['yearNavData'][dataCollectionSectionForm['vars']['dataType']] = dataCollectionSectionForm['vars']['navs_chunks']['year'][yearDate][dataCollectionSectionForm['vars']['dataType']];
 
                                 dataCollectionSectionForm['vars']['yearData'].push(dataCollectionSectionForm['vars']['yearNavData']);
                             }
@@ -355,7 +436,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             chart.data.datasets = [
                                     {
                                         label: 'NAVS (1 YEAR)',
-                                        data: dataCollectionSectionForm['vars']['yearData'].map(row => row.nav),
+                                        data: dataCollectionSectionForm['vars']['yearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
                                         pointRadius: 0
                                     }
                                 ];
@@ -372,7 +453,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             for (var threeYearDate in dataCollectionSectionForm['vars']['navs_chunks']['threeYear']) {
                                 dataCollectionSectionForm['vars']['threeYearNavData'] = { };
                                 dataCollectionSectionForm['vars']['threeYearNavData']['date'] = threeYearDate;
-                                dataCollectionSectionForm['vars']['threeYearNavData']['nav'] = dataCollectionSectionForm['vars']['navs_chunks']['threeYear'][threeYearDate]['nav'];
+                                dataCollectionSectionForm['vars']['threeYearNavData'][dataCollectionSectionForm['vars']['dataType']] = dataCollectionSectionForm['vars']['navs_chunks']['threeYear'][threeYearDate][dataCollectionSectionForm['vars']['dataType']];
 
                                 dataCollectionSectionForm['vars']['threeYearData'].push(dataCollectionSectionForm['vars']['threeYearNavData']);
                             }
@@ -381,7 +462,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             chart.data.datasets = [
                                     {
                                         label: 'NAVS (3 YEARS)',
-                                        data: dataCollectionSectionForm['vars']['threeYearData'].map(row => row.nav),
+                                        data: dataCollectionSectionForm['vars']['threeYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
                                         pointRadius: 0
                                     }
                                 ];
@@ -398,7 +479,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             for (var fiveYearDate in dataCollectionSectionForm['vars']['navs_chunks']['fiveYear']) {
                                 dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
                                 dataCollectionSectionForm['vars']['fiveYearNavData']['date'] = fiveYearDate;
-                                dataCollectionSectionForm['vars']['fiveYearNavData']['nav'] = dataCollectionSectionForm['vars']['navs_chunks']['fiveYear'][fiveYearDate]['nav'];
+                                dataCollectionSectionForm['vars']['fiveYearNavData'][dataCollectionSectionForm['vars']['dataType']] = dataCollectionSectionForm['vars']['navs_chunks']['fiveYear'][fiveYearDate][dataCollectionSectionForm['vars']['dataType']];
 
                                 dataCollectionSectionForm['vars']['fiveYearData'].push(dataCollectionSectionForm['vars']['fiveYearNavData']);
                             }
@@ -407,7 +488,33 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             chart.data.datasets = [
                                     {
                                         label: 'NAVS (5 YEARS)',
-                                        data: dataCollectionSectionForm['vars']['fiveYearData'].map(row => row.nav),
+                                        data: dataCollectionSectionForm['vars']['fiveYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
+                                        pointRadius: 0
+                                    }
+                                ];
+                            chart.update();
+                        }
+                    };
+            }
+
+            if (dataCollectionSectionForm['vars']['navs_chunks']['tenYear']) {
+                dataCollectionSectionForm['vars']['actions']['ten-year'] =
+                    {
+                        name: "10 YEARS",
+                        handler(chart) {
+                            for (var tenYearDate in dataCollectionSectionForm['vars']['navs_chunks']['tenYear']) {
+                                dataCollectionSectionForm['vars']['tenYearNavData'] = { };
+                                dataCollectionSectionForm['vars']['tenYearNavData']['date'] = tenYearDate;
+                                dataCollectionSectionForm['vars']['tenYearNavData'][dataCollectionSectionForm['vars']['dataType']] = dataCollectionSectionForm['vars']['navs_chunks']['tenYear'][tenYearDate][dataCollectionSectionForm['vars']['dataType']];
+
+                                dataCollectionSectionForm['vars']['tenYearData'].push(dataCollectionSectionForm['vars']['tenYearNavData']);
+                            }
+
+                            chart.data.labels = dataCollectionSectionForm['vars']['tenYearData'].map(row => row.date);
+                            chart.data.datasets = [
+                                    {
+                                        label: 'NAVS (10 YEARS)',
+                                        data: dataCollectionSectionForm['vars']['tenYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
                                         pointRadius: 0
                                     }
                                 ];
@@ -424,7 +531,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             for (var allDate in dataCollectionSectionForm['vars']['navs_chunks']['all']) {
                                 dataCollectionSectionForm['vars']['allNavData'] = { };
                                 dataCollectionSectionForm['vars']['allNavData']['date'] = allDate;
-                                dataCollectionSectionForm['vars']['allNavData']['nav'] = dataCollectionSectionForm['vars']['navs_chunks']['all'][allDate]['nav'];
+                                dataCollectionSectionForm['vars']['allNavData'][dataCollectionSectionForm['vars']['dataType']] = dataCollectionSectionForm['vars']['navs_chunks']['all'][allDate][dataCollectionSectionForm['vars']['dataType']];
 
                                 dataCollectionSectionForm['vars']['allData'].push(dataCollectionSectionForm['vars']['allNavData']);
                             }
@@ -433,7 +540,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                             chart.data.datasets = [
                                     {
                                         label: 'ALL',
-                                        data: dataCollectionSectionForm['vars']['allData'].map(row => row.nav),
+                                        data: dataCollectionSectionForm['vars']['allData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
                                         pointRadius: 0
                                     }
                                 ];
@@ -458,7 +565,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                         datasets: [
                             {
                                 label: navsText,
-                                data: dataCollectionSectionForm['vars']['initData'].map(row => row.nav),
+                                data: dataCollectionSectionForm['vars']['initData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
                                 pointRadius: 0
                             }
                         ]
@@ -467,6 +574,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                         {
                             afterRender: function(chart, options) {
                                 $('#timeline-buttons').attr('hidden', false);
+                                $('#datatype-buttons').attr('hidden', false);
                                 $('#timeline-loader').attr('hidden', true);
                                 $('#import-loader').attr('hidden', true);
                                 $('#timeline-chart').attr('hidden', false);
@@ -478,9 +586,12 @@ dataCollectionSectionForm['funcs']['init'] = function() {
             );
         })();
     }
+
     if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#{{componentId}}-{{sectionId}}-navs-table')) {
         $('#{{componentId}}-{{sectionId}}-navs-table').DataTable({
             columns: [
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -527,11 +638,61 @@ dataCollectionSectionForm['funcs']['init'] = function() {
         } else if (timeline === 'five-year') {
             dataCollectionSectionForm['vars']['fiveYearData'] = [];
             dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
+        } else if (timeline === 'ten-year') {
+            dataCollectionSectionForm['vars']['tenYearData'] = [];
+            dataCollectionSectionForm['vars']['tenYearNavData'] = { };
         } else if (timeline === 'all') {
             dataCollectionSectionForm['vars']['allData'] = [];
             dataCollectionSectionForm['vars']['allNavData'] = { };
         }
 
+        dataCollectionSectionForm['vars']['actions'][timeline].handler(dataCollectionSectionForm['vars']['navsChart']);
+    });
+
+    $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').off();
+    $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').click(function() {
+        var checked = $("input[type='radio'][name='datatype']:checked");
+        var datatype = $(checked).data('value');
+        var labels = $(checked).parents('.btn-group').children('label');
+
+        $(labels).each(function(index, label) {
+            $(label).removeClass('focus active disabled');
+            $(label).css('cursor', 'pointer');
+
+            if ($(label).children('input')[0].id === datatype) {
+                $(label).addClass('focus active disabled');
+                $(label).css('cursor', 'default');
+            }
+        });
+
+        dataCollectionSectionForm['vars']['dataType'] = datatype;
+
+        var timeline = $($("input[type='radio'][name='timeline']:checked")).data('value');
+
+        if (timeline === 'one-week') {
+            dataCollectionSectionForm['vars']['weekData'] = [];
+            dataCollectionSectionForm['vars']['weekNavData'] = { };
+        } else if (timeline === 'one-month') {
+            dataCollectionSectionForm['vars']['monthData'] = [];
+            dataCollectionSectionForm['vars']['monthNavData'] = { };
+        } else if (timeline === 'one-year') {
+            dataCollectionSectionForm['vars']['yearData'] = [];
+            dataCollectionSectionForm['vars']['yearNavData'] = { };
+        } else if (timeline === 'three-year') {
+            dataCollectionSectionForm['vars']['threeYearData'] = [];
+            dataCollectionSectionForm['vars']['threeYearNavData'] = { };
+        } else if (timeline === 'five-year') {
+            dataCollectionSectionForm['vars']['fiveYearData'] = [];
+            dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
+        } else if (timeline === 'ten-year') {
+            dataCollectionSectionForm['vars']['tenYearData'] = [];
+            dataCollectionSectionForm['vars']['tenYearNavData'] = { };
+        } else if (timeline === 'all') {
+            dataCollectionSectionForm['vars']['allData'] = [];
+            dataCollectionSectionForm['vars']['allNavData'] = { };
+        }
+        //eslint-disable-next-line
+        console.log($("input[type='radio'][name='timeline']:checked"));
         dataCollectionSectionForm['vars']['actions'][timeline].handler(dataCollectionSectionForm['vars']['navsChart']);
     });
 
@@ -544,6 +705,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
         $(thisButton).children('i').attr('hidden', false);
 
         $('#timeline-buttons').attr('hidden', true);
+        $('#datatype-buttons').attr('hidden', true);
         $('#timeline-import').attr('hidden', false);
         $('#timeline-chart').attr('hidden', true);
         $('#navs-table').attr('hidden', true);
@@ -558,6 +720,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
             $(thisButton).children('i').attr('hidden', true);
 
             $('#timeline-buttons').attr('hidden', false);
+            $('#datatype-buttons').attr('hidden', false);
             $('#timeline-import').attr('hidden', true);
             $('#timeline-chart').attr('hidden', false);
             $('#navs-table').attr('hidden', false);

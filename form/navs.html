@@ -1,4 +1,4 @@
-<!-- htmlhint tag-pair:false --><!-- htmlmin:ignore -->
+<!-- htmlhint tag-pair:false -->
 {% set timelineButtons = [] %}
 {% if scheme['navs']['navs_chunks'] is defined %}
     {% if scheme['navs']['navs_chunks']['week'] is defined and scheme['navs']['navs_chunks']['week']|length > 0 %}
@@ -607,93 +607,124 @@ dataCollectionSectionForm['funcs']['init'] = function() {
         });
     }
 
+    //Activate All button
+    var timelineChecked = $("input[type='radio'][name='timeline']:checked");
+    var timelineTimeline = $(timelineChecked).data('value');
+    var timelineLabels = $(timelineChecked).parents('.btn-group').children('label');
+    $(timelineLabels).each(function(index, timelineLabel) {
+        $(timelineLabel).removeClass('focus active disabled');
+        $(timelineLabel).css('cursor', 'pointer');
+
+        if ($(timelineLabel).children('input')[0].id === timelineTimeline) {
+            $(timelineLabel).addClass('focus active disabled');
+            $(timelineLabel).css('cursor', 'default');
+        }
+    });
+
     $("input[type='radio'][name='timeline']:checked").parents('.btn-group').children('label').children('input').off();
     $("input[type='radio'][name='timeline']:checked").parents('.btn-group').children('label').children('input').click(function() {
-        var checked = $("input[type='radio'][name='timeline']:checked");
-        var timeline = $(checked).data('value');
-        var labels = $(checked).parents('.btn-group').children('label');
+        timelineChecked = $("input[type='radio'][name='timeline']:checked");
+        timelineTimeline = $(timelineChecked).data('value');
+        timelineLabels = $(timelineChecked).parents('.btn-group').children('label');
 
-        $(labels).each(function(index, label) {
-            $(label).removeClass('focus active disabled');
-            $(label).css('cursor', 'pointer');
+        $(timelineLabels).each(function(index, timelineLabel) {
+            $(timelineLabel).removeClass('focus active disabled');
+            $(timelineLabel).css('cursor', 'pointer');
 
-            if ($(label).children('input')[0].id === timeline) {
-                $(label).addClass('focus active disabled');
-                $(label).css('cursor', 'default');
+            if ($(timelineLabel).children('input')[0].id === timelineTimeline) {
+                $(timelineLabel).addClass('focus active disabled');
+                $(timelineLabel).css('cursor', 'default');
             }
         });
 
-        if (timeline === 'one-week') {
+        if (timelineTimeline === 'one-week') {
             dataCollectionSectionForm['vars']['weekData'] = [];
-            dataCollectionSectionForm['vars']['weekNavData'] = { };
-        } else if (timeline === 'one-month') {
+            dataCollectionSectionForm['vars']['weekPerformanceData'] = { };
+        } else if (timelineTimeline === 'one-month') {
             dataCollectionSectionForm['vars']['monthData'] = [];
-            dataCollectionSectionForm['vars']['monthNavData'] = { };
-        } else if (timeline === 'one-year') {
+            dataCollectionSectionForm['vars']['monthPerformanceData'] = { };
+        } else if (timelineTimeline === 'one-year') {
             dataCollectionSectionForm['vars']['yearData'] = [];
-            dataCollectionSectionForm['vars']['yearNavData'] = { };
-        } else if (timeline === 'three-year') {
+            dataCollectionSectionForm['vars']['yearPerformanceData'] = { };
+        } else if (timelineTimeline === 'three-year') {
             dataCollectionSectionForm['vars']['threeYearData'] = [];
-            dataCollectionSectionForm['vars']['threeYearNavData'] = { };
-        } else if (timeline === 'five-year') {
+            dataCollectionSectionForm['vars']['threeYearPerformanceData'] = { };
+        } else if (timelineTimeline === 'five-year') {
             dataCollectionSectionForm['vars']['fiveYearData'] = [];
-            dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
-        } else if (timeline === 'ten-year') {
+            dataCollectionSectionForm['vars']['fiveYearPerformanceData'] = { };
+        } else if (timelineTimeline === 'ten-year') {
             dataCollectionSectionForm['vars']['tenYearData'] = [];
-            dataCollectionSectionForm['vars']['tenYearNavData'] = { };
-        } else if (timeline === 'all') {
+            dataCollectionSectionForm['vars']['tenYearPerformanceData'] = { };
+        } else if (timelineTimeline === 'all') {
             dataCollectionSectionForm['vars']['allData'] = [];
-            dataCollectionSectionForm['vars']['allNavData'] = { };
+            dataCollectionSectionForm['vars']['allPerformanceData'] = { };
         }
 
-        dataCollectionSectionForm['vars']['actions'][timeline].handler(dataCollectionSectionForm['vars']['navsChart']);
+        dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
+    });
+
+    //Activate Return Amount button
+    var datatypeChecked = $("input[type='radio'][name='datatype']:checked");
+    var datatypeDatatype = $(datatypeChecked).data('value');
+    var datatypeLabels = $(datatypeChecked).parents('.btn-group').children('label');
+    $(datatypeLabels).each(function(index, datatypeLabel) {
+        $(datatypeLabel).removeClass('focus active disabled');
+        $(datatypeLabel).css('cursor', 'pointer');
+
+        if ($(datatypeLabel).children('input')[0].id === datatypeDatatype) {
+            $(datatypeLabel).addClass('focus active disabled');
+            $(datatypeLabel).css('cursor', 'default');
+        }
     });
 
     $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').off();
     $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').click(function() {
-        var checked = $("input[type='radio'][name='datatype']:checked");
-        var datatype = $(checked).data('value');
-        var labels = $(checked).parents('.btn-group').children('label');
+        datatypeChecked = $("input[type='radio'][name='datatype']:checked");
+        datatypeDatatype = $(datatypeChecked).data('value');
+        datatypeLabels = $(datatypeChecked).parents('.btn-group').children('label');
 
-        $(labels).each(function(index, label) {
-            $(label).removeClass('focus active disabled');
-            $(label).css('cursor', 'pointer');
+        $(datatypeLabels).each(function(index, datatypeLabel) {
+            $(datatypeLabel).removeClass('focus active disabled');
+            $(datatypeLabel).css('cursor', 'pointer');
 
-            if ($(label).children('input')[0].id === datatype) {
-                $(label).addClass('focus active disabled');
-                $(label).css('cursor', 'default');
+            if ($(datatypeLabel).children('input')[0].id === datatypeDatatype) {
+                $(datatypeLabel).addClass('focus active disabled');
+                $(datatypeLabel).css('cursor', 'default');
             }
         });
 
-        dataCollectionSectionForm['vars']['dataType'] = datatype;
+        dataCollectionSectionForm['vars']['dataType'] = datatypeDatatype;
 
-        var timeline = $($("input[type='radio'][name='timeline']:checked")).data('value');
+        $($("input[type='radio'][name='timeline']:checked").parents('.btn-group').children('label')).each(function(index, label) {
+            if ($(label).hasClass('active')) {
+                timelineTimeline = $(label).children('input').data('value');
+            }
+        });
 
-        if (timeline === 'one-week') {
+        if (timelineTimeline === 'one-week') {
             dataCollectionSectionForm['vars']['weekData'] = [];
-            dataCollectionSectionForm['vars']['weekNavData'] = { };
-        } else if (timeline === 'one-month') {
+            dataCollectionSectionForm['vars']['weekPerformanceData'] = { };
+        } else if (timelineTimeline === 'one-month') {
             dataCollectionSectionForm['vars']['monthData'] = [];
-            dataCollectionSectionForm['vars']['monthNavData'] = { };
-        } else if (timeline === 'one-year') {
+            dataCollectionSectionForm['vars']['monthPerformanceData'] = { };
+        } else if (timelineTimeline === 'one-year') {
             dataCollectionSectionForm['vars']['yearData'] = [];
-            dataCollectionSectionForm['vars']['yearNavData'] = { };
-        } else if (timeline === 'three-year') {
+            dataCollectionSectionForm['vars']['yearPerformanceData'] = { };
+        } else if (timelineTimeline === 'three-year') {
             dataCollectionSectionForm['vars']['threeYearData'] = [];
-            dataCollectionSectionForm['vars']['threeYearNavData'] = { };
-        } else if (timeline === 'five-year') {
+            dataCollectionSectionForm['vars']['threeYearPerformanceData'] = { };
+        } else if (timelineTimeline === 'five-year') {
             dataCollectionSectionForm['vars']['fiveYearData'] = [];
-            dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
-        } else if (timeline === 'ten-year') {
+            dataCollectionSectionForm['vars']['fiveYearPerformanceData'] = { };
+        } else if (timelineTimeline === 'ten-year') {
             dataCollectionSectionForm['vars']['tenYearData'] = [];
-            dataCollectionSectionForm['vars']['tenYearNavData'] = { };
-        } else if (timeline === 'all') {
+            dataCollectionSectionForm['vars']['tenYearPerformanceData'] = { };
+        } else if (timelineTimeline === 'all') {
             dataCollectionSectionForm['vars']['allData'] = [];
-            dataCollectionSectionForm['vars']['allNavData'] = { };
+            dataCollectionSectionForm['vars']['allPerformanceData'] = { };
         }
-        //eslint-disable-next-line
-        console.log($("input[type='radio'][name='timeline']:checked"));
-        dataCollectionSectionForm['vars']['actions'][timeline].handler(dataCollectionSectionForm['vars']['navsChart']);
+
+        dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
     });
 
     $('#{{componentId}}-{{sectionId}}-import').off();
@@ -768,4 +799,3 @@ setTimeout(function(){
     });
 }, 1000);
 </script>
-<!-- htmlmin:ignore -->

@@ -1,4 +1,4 @@
-<!-- htmlhint tag-pair:false -->
+<!-- htmlhint tag-pair:false --><!-- htmlmin:ignore -->
 {% set timelineButtons = [] %}
 {% if scheme['navs']['navs_chunks'] is defined %}
     {% if scheme['navs']['navs_chunks']['week'] is defined and scheme['navs']['navs_chunks']['week']|length > 0 %}
@@ -554,6 +554,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
                 {
                     type: 'line',
                     options : {
+                        locale: 'en-IN',
                         animation: false,
                         interaction: {
                             mode: 'nearest',
@@ -799,3 +800,4 @@ setTimeout(function(){
     });
 }, 1000);
 </script>
+<!-- htmlmin:ignore -->

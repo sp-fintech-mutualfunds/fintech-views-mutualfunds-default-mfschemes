@@ -1,0 +1,256 @@
+<div class="row">
+    <div class="col">{{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'amc_ids',
+                'fieldLabel'                     : 'Amc(s)',
+                'fieldType'                      : 'select2',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Select AMC to search schemes',
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : false,
+                'fieldBazPostOnUpdate'           : false,
+                'fieldDataSelect2Options'        : amcs,
+                'fieldDataSelect2Multiple'       : true,
+                'fieldDataSelect2OptionsKey'     : 'id',
+                'fieldDataSelect2OptionsValue'   : 'name',
+                'fieldDataSelect2OptionsArray'   : true,
+                'fieldDataSelect2OptionsSelected': ''
+            ]
+        )}}
+    </div>
+    <div class="col">{{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'category_ids',
+                'fieldLabel'                     : 'Categories',
+                'fieldType'                      : 'select2',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Select Categories to search schemes',
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : false,
+                'fieldBazPostOnUpdate'           : false,
+                'fieldDataSelect2Options'        : categories,
+                'fieldDataSelect2Multiple'       : true,
+                'fieldDataSelect2OptionsKey'     : 'id',
+                'fieldDataSelect2OptionsValue'   : 'name',
+                'fieldDataSelect2OptionsArray'   : true,
+                'fieldDataSelect2OptionsSelected': ''
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('content',
+            [
+                'component'                 : table['component'],
+                'componentName'             : componentName,
+                'componentId'               : componentId,
+                'parentComponentId'         : parent,
+                'sectionId'                 : 'main',
+                'contentType'               : 'sectionWithListing',
+                'cardHeader'                : false,
+                'cardType'                  : 'primary',
+                'cardIcon'                  : 'circle-dot',
+                'cardTitle'                 : componentName,
+                'cardAdditionalClass'       : 'rounded-0',
+                'cardShowTools'             : ['maximize'],
+                'dtFixedHeader'             : true,
+                'dtFilter'                  : true,
+                'dtFilterShowQuickFilter'   : false,
+                'dtFilterButtons'           : ['edit', 'delete', 'add', 'clone', 'reset'],
+                'dtFilters'                 : table['filters'],
+                'dtFilterColumns'           : table['filterColumns'],
+                'dtTable'                   : table,
+                'dtColumns'                 : table['columns'],
+                'dtPostUrl'                 : table['postUrl'],
+                'dtPostUrlParams'           : table['postUrlParams'],
+                'dtStriped'                 : true,
+                'dtStateSave'               : false,
+                'dtBordered'                : false,
+                'dtHideIdColumn'            : true,
+                'dtNoOfColumnsToShow'       : 11,
+                'dtTableCompact'            : true,
+                'dtZeroRecords'             : 'No schemes data available.',
+                'dtPrimaryButtons'          :
+                    {
+                        'componentId'           : componentId,
+                        'sectionId'             : 'listing',
+                        'buttonType'            : 'button',
+                        'buttons'               :
+                            {
+                                'compare' : {
+                                    'title'                   : 'Compare',
+                                    'size'                    : 'sm',
+                                    'type'                    : 'primary',
+                                    'icon'                    : 'equals',
+                                    'position'                : 'right',
+                                    'buttonAdditionalClass'   : 'contentAjaxLink',
+                                    'url'                     : links.url('mf/schemes/q/compare/true')
+                                }
+                            }
+                    }
+            ]
+        )}}
+    </div>
+</div>
+<script>
+/*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection echarts */
+var dataCollectionComponent, dataCollectionSection, dataCollectionSectionForm;
+if (!window['dataCollection']) {
+    window['dataCollection'] = { };
+}
+if (!window['dataCollection']['{{componentId}}']) {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'] = { };
+} else {
+    dataCollectionComponent =
+        window['dataCollection']['{{componentId}}'];
+}
+if (!dataCollectionComponent['{{componentId}}-{{sectionId}}']) {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'] = { };
+} else {
+    dataCollectionSection =
+        dataCollectionComponent['{{componentId}}-{{sectionId}}'];
+}
+if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
+    dataCollectionSectionForm =
+        dataCollectionSection['{{componentId}}-{{sectionId}}-form'] = { };
+} else {
+    dataCollectionSectionForm =
+        dataCollectionSection['{{componentId}}-{{sectionId}}-form'];
+}
+
+dataCollectionSection =
+    $.extend(dataCollectionSection, {
+        '{{componentId}}-{{sectionId}}-amc_ids'                             : {
+            placeholder: "SELECT AMC(s)",
+            afterInit: function() {
+                $('#{{componentId}}-{{sectionId}}-amc_ids').on('select2:select select2:unselect', function(e) {
+                    dataCollectionSectionForm['funcs']['query']();
+                });
+            }
+        },
+        '{{componentId}}-{{sectionId}}-category_ids'                        : {
+            placeholder: "SELECT CATEGORIES",
+            afterInit: function() {
+                $('#{{componentId}}-{{sectionId}}-category_ids').on('select2:select select2:unselect', function(e) {
+                    dataCollectionSectionForm['funcs']['query']();
+                });
+            }
+        },
+        '{{componentId}}-{{sectionId}}-filter-andor'                        : { },
+        '{{componentId}}-{{sectionId}}-filter-field'                        : { },
+        '{{componentId}}-{{sectionId}}-filter-operator'                     : { },
+        '{{componentId}}-{{sectionId}}-filter-value'                        : { },
+        '{{componentId}}-{{sectionId}}-filter-id'                           : { },
+        '{{componentId}}-{{sectionId}}-filter-name'                         : { },
+        '{{componentId}}-{{sectionId}}-filter-default'                      : { },
+        '{{componentId}}-{{sectionId}}-filter-sharing-direct-url'           : { },
+        '{{componentId}}-{{sectionId}}-filter-sharing-rids'                 : { },
+        '{{componentId}}-{{sectionId}}-filter-sharing-aids'                 : { },
+        '{{componentId}}-{{sectionId}}-form' : {
+            rules: {
+            },
+            messages: {
+            }
+        }
+    });
+
+if (!dataCollectionSectionForm['vars']) {
+    dataCollectionSectionForm['vars'] = { };
+}
+dataCollectionSectionForm['vars']['compare'] = [];
+
+if (!dataCollectionSectionForm['funcs']) {
+    dataCollectionSectionForm['funcs'] = { };
+}
+
+dataCollectionSectionForm['funcs']['query'] = function() {
+    var query = '';
+    var amc = false;
+    var category = false;
+
+    if ($('#{{componentId}}-{{sectionId}}-amc_ids').val().length > 0) {
+        amc = true;
+    }
+
+    if ($('#{{componentId}}-{{sectionId}}-category_ids').val().length > 0) {
+        category = true;
+    }
+
+    if (amc && category) {
+        $.each($('#{{componentId}}-{{sectionId}}-amc_ids').val(), function(index, data) {
+            if (index === 0) {
+                query +=
+                    '-|' +
+                    'amc_id' + '|' +
+                    'equals' + '|' +
+                    data + '&';
+            } else {
+                query +=
+                    'AND' + '|' +
+                    'amc_id' + '|' +
+                    'equals' + '|' +
+                    data
+                    + '&';
+            }
+        });
+        $.each($('#{{componentId}}-{{sectionId}}-category_ids').val(), function(index, data) {
+            query +=
+                'AND' + '|' +
+                'category_id' + '|' +
+                'equals' + '|' +
+                data
+                + '&';
+        });
+    } else if (amc && !category) {
+        $.each($('#{{componentId}}-{{sectionId}}-amc_ids').val(), function(index, data) {
+            if (index === 0) {
+                query +=
+                    '-|' +
+                    'amc_id' + '|' +
+                    'equals' + '|' +
+                    data + '&';
+            } else {
+                query +=
+                    'AND' + '|' +
+                    'amc_id' + '|' +
+                    'equals' + '|' +
+                    data
+                    + '&';
+            }
+        });
+    } else {
+        $.each($('#{{componentId}}-{{sectionId}}-category_ids').val(), function(index, data) {
+            if (index === 0) {
+                query +=
+                    '-|' +
+                    'category_id' + '|' +
+                    'equals' + '|' +
+                    data + '&';
+            } else {
+                query +=
+                    'AND' + '|' +
+                    'category_id' + '|' +
+                    'equals' + '|' +
+                    data
+                    + '&';
+            }
+        });
+    }
+
+    dataCollection['{{componentId}}']['{{componentId}}-{{sectionId}}']['listOptions']['postParams']['conditions'] = query;
+
+    dataCollectionSection['BazContentSectionWithListing']
+        ._filterRunAjax(1, dataCollection['{{componentId}}']['{{componentId}}-{{sectionId}}']['listOptions']['datatable']['paginationCounters']['limit'], query);
+}
+</script>

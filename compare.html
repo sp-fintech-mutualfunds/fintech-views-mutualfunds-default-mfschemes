@@ -1,0 +1,125 @@
+<div class="row">
+    <div class="col">{{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'category_id',
+                'fieldLabel'                     : 'Category',
+                'fieldType'                      : 'select2',
+                'fieldHelp'                      : true,
+                'fieldRequired'                  : true,
+                'fieldHelpTooltipContent'        : 'Select category to search schemes',
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : false,
+                'fieldBazPostOnUpdate'           : false,
+                'fieldDataSelect2Options'        : categories,
+                'fieldDataSelect2OptionsKey'     : 'id',
+                'fieldDataSelect2OptionsValue'   : 'name',
+                'fieldDataSelect2OptionsArray'   : true,
+                'fieldDataSelect2OptionsSelected': ''
+            ]
+        )}}
+    </div>
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'scheme_id',
+                'fieldLabel'                     : 'Scheme',
+                'fieldType'                      : 'select2',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Search/Select Scheme',
+                'fieldRequired'                  : true,
+                'fieldDisabled'                  : true,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnCreate'           : false,
+                'fieldBazPostOnUpdate'           : false,
+                'fieldDataSelect2Options'        : [],
+                'fieldDataSelect2OptionsKey'     : 'id',
+                'fieldDataSelect2OptionsValue'   : 'name',
+                'fieldDataSelect2OptionsArray'   : true,
+                'fieldDataSelect2OptionsSelected': ''
+            ]
+        )}}
+    </div>
+</div>
+<div class="row text-center" id="no-compare">
+    <div class="col">
+        <span class="text-uppercase font-weight-bold">Select 2-4 schemes to compare</span>
+    </div>
+</div>
+<div id="compare-div">
+    {% set compareHtml =
+        '<div class="row">' ~
+        '    <div class="col">' ~
+        '        <table id="' ~ componentId ~ '-' ~ sectionId ~ '-compare-table" class="table table-sm table-hover responsive nowrap table-bordered mb-0" width="100%" cellspacing="0">' ~
+        '            <thead>' ~
+        '                <tr>' ~
+        '                    <th class="text-uppercase">Scheme Name</th>' ~
+        '                    <th class="text-uppercase">Start Date</th>' ~
+        '                    <th class="text-uppercase">Last Updated</th>' ~
+        '                    <th class="text-uppercase">Action</th>' ~
+        '                </tr>' ~
+        '            </thead>' ~
+        '            <tbody>' ~
+        '            </tbody>' ~
+        '        </table>' ~
+        '    </div>' ~
+        '</div>'
+    %}
+    <div class="row">
+        <div class="col">
+            {{adminltetags.useTag('fields',
+                [
+                    'component'                      : component,
+                    'componentName'                  : componentName,
+                    'componentId'                    : componentId,
+                    'sectionId'                      : sectionId,
+                    'fieldId'                        : 'compare',
+                    'fieldLabel'                     : 'Compare List',
+                    'fieldType'                      : 'html',
+                    'fieldAdditionalClass'           : 'mb-0',
+                    'fieldHelp'                      : true,
+                    'fieldHelpTooltipContent'        : 'Compare List',
+                    'fieldRequired'                  : false,
+                    'fieldBazScan'                   : false,
+                    'fieldHtmlContent'               : compareHtml
+                ]
+            )}}
+        </div>
+    </div>
+    <hr>
+    <div class="row" id="can-compare">
+        {% set compare = true %}
+        <div class="col">
+            {{adminltetags.useTag('tabs',
+                [
+                    'component'                     : component,
+                    'componentName'                 : componentName,
+                    'componentId'                   : componentId,
+                    'sectionId'                     : 'main',
+                    'tabsId'                        : 'tabs',
+                    'tabsStyle'                     : 'card-outline-tabs',
+                    'tabsData'                      :
+                        [
+                            'navs'   :
+                            [
+                                'tabTitle'          : 'Navs',
+                                'tabInclude'        : 'schemes/form/navs'
+                            ],
+                            'rr'   :
+                            [
+                                'tabTitle'          : 'Rolling Returns',
+                                'tabInclude'        : 'schemes/form/rr'
+                            ]
+                        ]
+                ]
+            )}}
+        </div>
+    </div>
+</div>

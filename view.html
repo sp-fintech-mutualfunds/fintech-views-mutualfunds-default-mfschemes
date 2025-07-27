@@ -1,31 +1,30 @@
 {% if scheme['id'] is defined %}
     {% set schemeId = scheme['id'] %}
     {% set title = 'Scheme (' ~ scheme['name'] ~ ')' %}
-{% else %}
-    {% set schemeId = '' %}
-    {% set title = 'New Scheme' %}
-{% endif %}
-{{adminltetags.useTag('content',
-    [
-        'component'                     : component,
-        'componentName'                 : componentName,
-        'componentId'                   : componentId,
-        'parentComponentId'             : parent,
-        'sectionId'                     : 'main',
-        'contentType'                   : 'sectionWithForm',
-        'cardHeader'                    : true,
-        'cardFooter'                    : true,
-        'cardType'                      : 'primary',
-        'cardIcon'                      : 'circle-dot',
-        'cardTitle'                     : title,
-        'cardAdditionalClass'           : 'rounded-0',
-        'cardBodyInclude'               : 'schemes/form',
-        'cardShowTools'                 : ['packageSettings'],
-        'formButtons'                   :
+    {{adminltetags.useTag('content',
         [
-            'updateButtonId'                : schemeId,
-            'cancelActionUrl'               : 'mf/schemes',
-            'closeActionUrl'                : 'mf/schemes'
+            'component'                     : component,
+            'componentName'                 : componentName,
+            'componentId'                   : componentId,
+            'parentComponentId'             : parent,
+            'sectionId'                     : 'main',
+            'contentType'                   : 'sectionWithForm',
+            'cardHeader'                    : true,
+            'cardFooter'                    : true,
+            'cardType'                      : 'primary',
+            'cardIcon'                      : 'circle-dot',
+            'cardTitle'                     : title,
+            'cardAdditionalClass'           : 'rounded-0',
+            'cardBodyInclude'               : 'schemes/form',
+            'cardShowTools'                 : ['packageSettings'],
+            'formButtons'                   :
+            [
+                'updateButtonId'                : schemeId,
+                'cancelActionUrl'               : 'mf/schemes',
+                'closeActionUrl'                : 'mf/schemes'
+            ]
         ]
-    ]
-)}}
+    )}}
+{% else %}
+    ERROR: NO SCHEME SELECTED
+{% endif %}

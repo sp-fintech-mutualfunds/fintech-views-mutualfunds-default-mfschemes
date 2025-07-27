@@ -1,126 +1,386 @@
 <!-- htmlhint tag-pair:false --><!-- htmlmin:ignore -->
-{% set timelineButtons = [] %}
-{% if schemeNavChunks is defined %}
-    {% if schemeNavChunks['week'] is defined and schemeNavChunks['week']|length > 0 %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'one-week' : [
-                    'title'                   : '1W',
-                    'type'                    : 'primary',
-                    'value'                   : 'one-week',
-                    'disabled'                : true
+{% if compare is defined and compare == true %}
+    <div class="row">
+        <div class="col">
+            {{adminltetags.useTag('buttons',
+                [
+                    'component'                         : component,
+                    'componentName'                     : componentName,
+                    'componentId'                       : componentId,
+                    'sectionId'                         : sectionId,
+                    'buttonType'                        : 'ButtonGroup',
+                    'buttonId'                          : 'timeline',
+                    'groupButtonType'                   : 'radio',
+                    'groupRadioButtonChecked'           : 'week',
+                    'buttons'                           :
+                        [
+                            'week' : [
+                                'title'                   : '1W',
+                                'type'                    : 'primary',
+                                'value'                   : 'week',
+                                'disabled'                : true
+                            ],
+                            'month' : [
+                                'title'                   : '1M',
+                                'type'                    : 'primary',
+                                'value'                   : 'month'
+                            ],
+                            'threeMonth' : [
+                                'title'                   : '3M',
+                                'type'                    : 'primary',
+                                'value'                   : 'threeMonth'
+                            ],
+                            'sixMonth' : [
+                                'title'                   : '6M',
+                                'type'                    : 'primary',
+                                'value'                   : 'sixMonth'
+                            ],
+                            'year' : [
+                                'title'                   : '1Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'year'
+                            ],
+                            'threeYear' : [
+                                'title'                   : '3Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'threeYear'
+                            ],
+                            'fiveYear' : [
+                                'title'                   : '5Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'fiveYear'
+                            ],
+                            'tenYear' : [
+                                'title'                   : '10Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'tenYear'
+                            ],
+                            'all' : [
+                                'title'                   : 'ALL',
+                                'type'                    : 'primary',
+                                'value'                   : 'all'
+                            ],
+                            'range' : [
+                                'title'                   : 'RANGE',
+                                'type'                    : 'primary',
+                                'value'                   : 'range'
+                            ]
+                        ]
                 ]
-            ]
-        ) %}
-    {% endif %}
-    {% if schemeNavChunks['month'] is defined and schemeNavChunks['month']|length > 0 %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'one-month' : [
-                    'title'                   : '1M',
-                    'type'                    : 'primary',
-                    'value'                   : 'one-month'
+            )}}
+        </div>
+        <div class="col">
+            {{adminltetags.useTag('fields',
+                [
+                    'component'                      : component,
+                    'componentName'                  : componentName,
+                    'componentId'                    : componentId,
+                    'sectionId'                      : sectionId,
+                    'fieldId'                        : 'date_range',
+                    'fieldLabel'                     : false,
+                    'fieldPlaceholder'               : 'Date Range',
+                    'fieldType'                      : 'flatpickr',
+                    'fieldFlatpickrClearButton'      : true,
+                    'fieldHelp'                      : true,
+                    'fieldHelpTooltipContent'        : 'Investment Date',
+                    'fieldRequired'                  : true,
+                    'fieldHidden'                    : true,
+                    'fieldBazScan'                   : true,
+                    'fieldBazPostOnCreate'           : false,
+                    'fieldBazPostOnUpdate'           : true,
+                    'fieldValue'                     : ''
                 ]
-            ]
-        ) %}
-    {% endif %}
-    {% if schemeNavChunks['threeMonth'] is defined and schemeNavChunks['threeMonth']|length > 0 %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'three-month' : [
-                    'title'                   : '3M',
-                    'type'                    : 'primary',
-                    'value'                   : 'three-month'
-                ]
-            ]
-        ) %}
-    {% endif %}
-    {% if schemeNavChunks['sixMonth'] is defined and schemeNavChunks['sixMonth']|length > 0 %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'six-month' : [
-                    'title'                   : '6M',
-                    'type'                    : 'primary',
-                    'value'                   : 'six-month'
-                ]
-            ]
-        ) %}
-    {% endif %}
-    {% if schemeNavChunks['year'] is defined and schemeNavChunks['year']|length > 0 %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'one-year' : [
-                    'title'                   : '1Y',
-                    'type'                    : 'primary',
-                    'value'                   : 'one-year'
-                ]
-            ]
-        ) %}
-    {% endif %}
-    {% if schemeNavChunks['threeYear'] is defined and schemeNavChunks['threeYear'] == true %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'three-year' : [
-                    'title'                   : '3Y',
-                    'type'                    : 'primary',
-                    'value'                   : 'three-year'
-                ]
-            ]
-        ) %}
-    {% endif %}
-    {% if schemeNavChunks['fiveYear'] is defined and schemeNavChunks['fiveYear'] == true %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'five-year' : [
-                    'title'                   : '5Y',
-                    'type'                    : 'primary',
-                    'value'                   : 'five-year'
-                ]
-            ]
-        ) %}
-    {% endif %}
-    {% if schemeNavChunks['tenYear'] is defined and schemeNavChunks['tenYear'] == true %}
-        {% set timelineButtons = array_merge(timelineButtons,
-            [
-                'ten-year' : [
-                    'title'                   : '10Y',
-                    'type'                    : 'primary',
-                    'value'                   : 'ten-year'
-                ]
-            ]
-        ) %}
-    {% endif %}
-    {% set timelineButtons = array_merge(timelineButtons,
-        [
-            'all' : [
-                'title'                   : 'ALL',
-                'type'                    : 'primary',
-                'value'                   : 'all'
-            ],
-            'range' : [
-                'title'                   : 'RANGE',
-                'type'                    : 'primary',
-                'value'                   : 'range'
-            ]
-        ]
-    ) %}
-{% endif %}
-<div class="row">
-    <div id="timeline-buttons" class="col" hidden>
-        {{adminltetags.useTag('buttons',
-            [
-                'component'                         : component,
-                'componentName'                     : componentName,
-                'componentId'                       : componentId,
-                'sectionId'                         : sectionId,
-                'buttonType'                        : 'ButtonGroup',
-                'buttonId'                          : 'timeline',
-                'groupButtonType'                   : 'radio',
-                'groupRadioButtonChecked'           : 'one-week',
-                'buttons'                           : timelineButtons
-            ]
-        )}}
+            )}}
+        </div>
     </div>
+    {% set navsChunks = json_encode([], 16) %}
+    {% set scheme = json_encode([], 16) %}
+    {% set categories = escaper.js(json_encode(categories, 16)) %}
+{% else %}
+    {% set timelineButtons = [] %}
+    {% if schemeNavChunks is defined %}
+        {% if schemeNavChunks['week'] is defined and schemeNavChunks['week']|length > 0 %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'week' : [
+                        'title'                   : '1W',
+                        'type'                    : 'primary',
+                        'value'                   : 'week',
+                        'disabled'                : true
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['month'] is defined and schemeNavChunks['month']|length > 0 %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'month' : [
+                        'title'                   : '1M',
+                        'type'                    : 'primary',
+                        'value'                   : 'month'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['threeMonth'] is defined and schemeNavChunks['threeMonth']|length > 0 %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'threeMonth' : [
+                        'title'                   : '3M',
+                        'type'                    : 'primary',
+                        'value'                   : 'threeMonth'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['sixMonth'] is defined and schemeNavChunks['sixMonth']|length > 0 %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'sixMonth' : [
+                        'title'                   : '6M',
+                        'type'                    : 'primary',
+                        'value'                   : 'sixMonth'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['year'] is defined and schemeNavChunks['year']|length > 0 %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'year' : [
+                        'title'                   : '1Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'year'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['threeYear'] is defined and schemeNavChunks['threeYear'] == true %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'threeYear' : [
+                        'title'                   : '3Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'threeYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['fiveYear'] is defined and schemeNavChunks['fiveYear'] == true %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'fiveYear' : [
+                        'title'                   : '5Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'fiveYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['tenYear'] is defined and schemeNavChunks['tenYear'] == true %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'tenYear' : [
+                        'title'                   : '10Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'tenYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% set timelineButtons = array_merge(timelineButtons,
+            [
+                'all' : [
+                    'title'                   : 'ALL',
+                    'type'                    : 'primary',
+                    'value'                   : 'all'
+                ],
+                'range' : [
+                    'title'                   : 'RANGE',
+                    'type'                    : 'primary',
+                    'value'                   : 'range'
+                ]
+            ]
+        ) %}
+    {% endif %}
+    <div class="row">
+        <div id="timeline-buttons" class="col" hidden>
+            {{adminltetags.useTag('buttons',
+                [
+                    'component'                         : component,
+                    'componentName'                     : componentName,
+                    'componentId'                       : componentId,
+                    'sectionId'                         : sectionId,
+                    'buttonType'                        : 'ButtonGroup',
+                    'buttonId'                          : 'timeline',
+                    'groupButtonType'                   : 'radio',
+                    'groupRadioButtonChecked'           : 'week',
+                    'buttons'                           : timelineButtons
+                ]
+            )}}
+        </div>
+        <div class="col">
+            {{adminltetags.useTag('fields',
+                [
+                    'component'                      : component,
+                    'componentName'                  : componentName,
+                    'componentId'                    : componentId,
+                    'sectionId'                      : sectionId,
+                    'fieldId'                        : 'date_range',
+                    'fieldLabel'                     : false,
+                    'fieldPlaceholder'               : 'Date Range',
+                    'fieldType'                      : 'flatpickr',
+                    'fieldFlatpickrClearButton'      : true,
+                    'fieldHelp'                      : true,
+                    'fieldHelpTooltipContent'        : 'Investment Date',
+                    'fieldRequired'                  : true,
+                    'fieldHidden'                    : true,
+                    'fieldBazScan'                   : true,
+                    'fieldBazPostOnCreate'           : false,
+                    'fieldBazPostOnUpdate'           : true,
+                    'fieldValue'                     : ''
+                ]
+            )}}
+        </div>
+        <div id="datatype-buttons" class="col text-center" hidden>
+            {{adminltetags.useTag('buttons',
+                [
+                    'component'                         : component,
+                    'componentName'                     : componentName,
+                    'componentId'                       : componentId,
+                    'sectionId'                         : sectionId,
+                    'buttonType'                        : 'ButtonGroup',
+                    'buttonId'                          : 'datatype',
+                    'groupButtonType'                   : 'radio',
+                    'groupRadioButtonChecked'           : 'nav',
+                    'buttons'                           :
+                    [
+                        'nav' : [
+                            'title'                   : 'NAVS',
+                            'type'                    : 'primary',
+                            'value'                   : 'nav'
+                        ],
+                        'diff' : [
+                            'title'                   : 'DIFF',
+                            'type'                    : 'primary',
+                            'value'                   : 'diff'
+                        ],
+                        'diff_percent' : [
+                            'title'                   : 'PERCENT',
+                            'type'                    : 'primary',
+                            'value'                   : 'diff_percent'
+                        ]
+                    ]
+                ]
+            )}}
+        </div>
+        <div class="col">
+            {{adminltetags.useTag('buttons',
+                [
+                    'componentId'           : componentId,
+                    'sectionId'             : sectionId,
+                    'buttonType'            : 'button',
+                    'buttons'               :
+                        [
+                            'import' : [
+                                'title'                   : 'Import Navs',
+                                'position'                : 'right',
+                                'size'                    : 'sm',
+                                'icon'                    : 'cog fa-spin',
+                                'iconHidden'              : true,
+                                'url'                     : links.url('mf/schemes/q/id/' ~ scheme['id'])
+                            ]
+                        ]
+                ]
+            )}}
+        </div>
+    </div>
+    {% set navsChunks = json_encode(schemeNavChunks, 16) %}
+    {% set scheme = json_encode(scheme, 16) %}
+    <div class="row">
+        <div class="col">
+            {{adminltetags.useTag('buttons',
+                [
+                    'component'                      : component,
+                    'componentName'                  : componentName,
+                    'componentId'                    : componentId,
+                    'sectionId'                      : sectionId,
+                    'buttonType'                    : 'button',
+                    'buttons'                       :
+                        [
+                            'navs-link'    : [
+                                'title'                   : 'link',
+                                'size'                    : 'xs',
+                                'disabled'                : true,
+                                'hidden'                  : true,
+                                'url'                     : '#'
+                            ]
+                        ]
+                ]
+            )}}
+        </div>
+    </div>
+    <br>
+    <div class="row text-center" id="timeline-import" hidden>
+        <div class="col">
+            <i class="fa fa-cog fa-spin"></i> Importing all available NAV data...
+        </div>
+    </div>
+    {% set compare = false %}
+    {% set categories = json_encode([], 16) %}
+{% endif %}
+<div class="row" id="timeline-chart" hidden>
+    <div class="col">
+        <div id="navsChart"></div>
+    </div>
+</div>
+<div class="row text-center" id="timeline-loader">
+    <div class="col">
+        <i class="fa fa-cog fa-spin"></i> Loading chart...
+    </div>
+</div>
+<hr>
+{% set trendsHtml =
+    '<div class="row">' ~
+    '    <div class="col">' ~
+    '        <table id="' ~ componentId ~ '-' ~ sectionId ~ '-trends-table" class="table table-sm table-hover responsive nowrap table-bordered mb-0" width="100%" cellspacing="0">' ~
+    '            <thead>' ~
+    '                <tr>' ~
+    '                    <th id="trend-days" class="text-uppercase text-center" colspan="3">Trend Days</th>' ~
+    '                    <th class="text-uppercase text-center" colspan="14">Trend distribution (# of times)</th>' ~
+    '                </tr>' ~
+    '                <tr>'
+%}
+{% for trends in
+    ['up days',
+    'down days',
+    'neutral days',
+    '> -5%',
+    '-5-4%',
+    '-4-3%',
+    '-3-2%',
+    '-2-1%',
+    '-1-0%',
+    '0%',
+    '0-1%',
+    '1-2%',
+    '2-3%',
+    '3-4%',
+    '4-5%',
+    '> 5%']
+%}
+    {% set trendsHtml = trendsHtml ~ '<th class="text-uppercase">' ~ trends ~ '</th>' %}
+{% endfor %}
+{% set trendsHtml = trendsHtml ~
+    '                </tr>' ~
+    '            </thead>' ~
+    '            <tbody>' ~
+    '            </tbody>' ~
+    '        </table>' ~
+    '    </div>' ~
+    '</div>'
+%}
+<div class="row" id="trends-div">
     <div class="col">
         {{adminltetags.useTag('fields',
             [
@@ -128,118 +388,21 @@
                 'componentName'                  : componentName,
                 'componentId'                    : componentId,
                 'sectionId'                      : sectionId,
-                'fieldId'                        : 'date_range',
-                'fieldLabel'                     : false,
-                'fieldPlaceholder'               : 'Date Range',
-                'fieldType'                      : 'flatpickr',
-                'fieldFlatpickrClearButton'      : true,
+                'fieldId'                        : 'trends',
+                'fieldLabel'                     : 'Trend Statistics & Distribution',
+                'fieldType'                      : 'html',
+                'fieldAdditionalClass'           : 'mb-0',
                 'fieldHelp'                      : true,
-                'fieldHelpTooltipContent'        : 'Investment Date',
-                'fieldRequired'                  : true,
-                'fieldHidden'                    : true,
-                'fieldBazScan'                   : true,
-                'fieldBazPostOnCreate'           : false,
-                'fieldBazPostOnUpdate'           : true,
-                'fieldValue'                     : ''
+                'fieldHelpTooltipContent'        : 'Trend Statistics & Distribution',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : false,
+                'fieldHtmlContent'               : trendsHtml
             ]
         )}}
-    </div>
-    <div id="datatype-buttons" class="col text-center" hidden>
-        {{adminltetags.useTag('buttons',
-            [
-                'component'                         : component,
-                'componentName'                     : componentName,
-                'componentId'                       : componentId,
-                'sectionId'                         : sectionId,
-                'buttonType'                        : 'ButtonGroup',
-                'buttonId'                          : 'datatype',
-                'groupButtonType'                   : 'radio',
-                'groupRadioButtonChecked'           : 'nav',
-                'buttons'                           :
-                [
-                    'nav' : [
-                        'title'                   : 'NAVS',
-                        'type'                    : 'primary',
-                        'value'                   : 'nav'
-                    ],
-                    'diff' : [
-                        'title'                   : 'DIFF',
-                        'type'                    : 'primary',
-                        'value'                   : 'diff'
-                    ],
-                    'diff_percent' : [
-                        'title'                   : 'PERCENT',
-                        'type'                    : 'primary',
-                        'value'                   : 'diff_percent'
-                    ]
-                ]
-            ]
-        )}}
-    </div>
-    <div class="col">
-        {{adminltetags.useTag('buttons',
-            [
-                'componentId'           : componentId,
-                'sectionId'             : sectionId,
-                'buttonType'            : 'button',
-                'buttons'               :
-                    [
-                        'import' : [
-                            'title'                   : 'Import Navs',
-                            'position'                : 'right',
-                            'size'                    : 'sm',
-                            'icon'                    : 'cog fa-spin',
-                            'iconHidden'              : true,
-                            'url'                     : links.url('mf/schemes/q/id/' ~ scheme['id'])
-                        ]
-                    ]
-            ]
-        )}}
-    </div>
-</div>
-<br>
-{% set navsChunks = json_encode(schemeNavChunks, 16) %}
-{% set scheme = json_encode(scheme, 16) %}
-<div class="row">
-    <div class="col">
-        {{adminltetags.useTag('buttons',
-            [
-                'component'                      : component,
-                'componentName'                  : componentName,
-                'componentId'                    : componentId,
-                'sectionId'                      : sectionId,
-                'buttonType'                    : 'button',
-                'buttons'                       :
-                    [
-                        'navs-link'    : [
-                            'title'                   : 'link',
-                            'size'                    : 'xs',
-                            'disabled'                : true,
-                            'hidden'                  : true,
-                            'url'                     : '#'
-                        ]
-                    ]
-            ]
-        )}}
-    </div>
-</div>
-<div class="row" id="timeline-chart" hidden>
-    <div class="col">
-        <canvas id="navsChart" style="max-height:400px;"></canvas>
-    </div>
-</div>
-<div class="row text-center" id="timeline-loader">
-    <div class="col">
-        <i class="fa fa-cog fa-spin"></i> Loading chart and NAV table...
-    </div>
-</div>
-<div class="row text-center" id="timeline-import" hidden>
-    <div class="col">
-        <i class="fa fa-cog fa-spin"></i> Importing all available NAV data...
     </div>
 </div>
 <script>
-/*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection Chart */
+/*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection echarts dayjs_plugin_minMax dayjs */
 var dataCollectionComponent, dataCollectionSection, dataCollectionSectionForm;
 if (!window['dataCollection']) {
     window['dataCollection'] = { };
@@ -266,32 +429,23 @@ if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
         dataCollectionSection['{{componentId}}-{{sectionId}}-form'];
 }
 
-dataCollectionSection =
-    $.extend(dataCollectionSection, {
-        '{{componentId}}-{{sectionId}}-date_range'                         : {
-            dateFormat          : "Y-m-d",
-            altFormat           : "Y-m-d",
-            static              : true,
-            mode                : 'range',
-            minDate             : "2000-01-01",
-            maxDate             : "today",
-            onChange: function(selectedDates, dateStr, instance) {
-                if (dateStr.includes('to')) {
-                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('range', 'range', dateStr);
-                    dataCollectionSectionForm['vars']['rangeActive'] = true;
-                    dataCollectionSectionForm['vars']['range'] = dateStr;
-                }
-            },
-            afterInit: function() {
-                dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate = dataCollectionSectionForm['vars']['scheme']['start_date'];
-                dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate = dataCollectionSectionForm['vars']['scheme']['navs_last_updated'];
-            }
-        },
-    });
+if (!dataCollectionSectionForm['vars']) {
+    dataCollectionSectionForm['vars'] = { };
+}
+if (!dataCollectionSectionForm['funcs']) {
+    dataCollectionSectionForm['funcs'] = { };
+}
+dataCollectionSectionForm['vars']['compare'] = '{{compare}}';
+if (dataCollectionSectionForm['vars']['compare'] == true) {
+    dataCollectionSectionForm['vars']['categorySchemes'] = { };
+    dataCollectionSectionForm['vars']['compareSchemes'] = { };
+    dataCollectionSectionForm['vars']['compareSchemesParams'] = { };
+    dataCollectionSectionForm['vars']['categories'] = JSON.parse('{{categories}}');
+}
 
-dataCollectionSectionForm['vars'] = { };
 dataCollectionSectionForm['vars']['scheme'] = JSON.parse('{{scheme}}');
 dataCollectionSectionForm['vars']['navs_chunks'] = JSON.parse('{{navsChunks}}');
+dataCollectionSectionForm['vars']['trend'] = { };
 dataCollectionSectionForm['vars']['actions'] = { };
 dataCollectionSectionForm['vars']['navsChart'] = { };
 dataCollectionSectionForm['vars']['initData'] = [];
@@ -319,358 +473,309 @@ dataCollectionSectionForm['vars']['range'] = null;
 dataCollectionSectionForm['vars']['rangeData'] = [];
 dataCollectionSectionForm['vars']['rangeNavData'] = { };
 dataCollectionSectionForm['vars']['dataType'] = 'nav';
+dataCollectionSectionForm['vars']['dataTypeName'] = 'NAV';
 dataCollectionSectionForm['vars']['timeline'] = 'week';
 
-dataCollectionSectionForm['funcs'] = { };
 dataCollectionSectionForm['funcs']['init'] = function() {
-    if (Object.keys(dataCollectionSectionForm['vars']['navs_chunks']).length > 0) {
-        (async function() {
-            var initDataObj, navsText;
-            if (Object.keys(dataCollectionSectionForm['vars']['navs_chunks']['week']).length > 0) {
-                initDataObj = dataCollectionSectionForm['vars']['navs_chunks']['week'];
-                navsText = 'NAVS (WEEK)';
-                dataCollectionSectionForm['vars']['timeline'] = 'week';
-            } else {
-                initDataObj = dataCollectionSectionForm['vars']['navs_chunks']['all'];
-                navsText = 'ALL';
-                dataCollectionSectionForm['vars']['timeline'] = 'all';
+    dataCollectionSectionForm['vars']['navsChart'] = echarts.init(document.getElementById('navsChart'), 'macarons');
+    dataCollectionSectionForm['vars']['navsChartOptions'] = {
+        title: {
+            text: 'NAVs for ' + dataCollectionSectionForm['vars']['scheme']['name']
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross'
             }
-
-            for (var initData in initDataObj) {
-                dataCollectionSectionForm['vars']['initNavData'] = { };
-                dataCollectionSectionForm['vars']['initNavData']['date'] = initData;
-                dataCollectionSectionForm['vars']['initNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                    initDataObj[initData][dataCollectionSectionForm['vars']['dataType']];
-
-                dataCollectionSectionForm['vars']['initData'].push(dataCollectionSectionForm['vars']['initNavData']);
+        },
+        legend: {},
+        xAxis: {
+            name: 'PERIOD (WEEK)',
+            nameLocation: 'middle',
+            nameTextStyle: {
+                lineHeight: 50
+            },
+            data: []
+        },
+        yAxis: {
+            name: 'NAVS',
+            nameRotate: 90,
+            nameLocation: "middle",
+            nameTextStyle: {
+                lineHeight: 60,
             }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['week']) {
-                dataCollectionSectionForm['vars']['actions']['one-week'] =
-                    {
-                        name: "1 WEEK",
-                        handler(chart) {
-                            for (var weekDate in dataCollectionSectionForm['vars']['navs_chunks']['week']) {
-                                dataCollectionSectionForm['vars']['weekNavData'] = { };
-                                dataCollectionSectionForm['vars']['weekNavData']['date'] = weekDate;
-                                dataCollectionSectionForm['vars']['weekNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['week'][weekDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['weekData'].push(dataCollectionSectionForm['vars']['weekNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['weekData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (WEEK)',
-                                        data: dataCollectionSectionForm['vars']['weekData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
+        },
+        dataZoom: [
+            {
+                type: 'inside'
             }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['month']) {
-                dataCollectionSectionForm['vars']['actions']['one-month'] =
-                    {
-                        name: "1 MONTH",
-                        handler(chart) {
-                            for (var monthDate in dataCollectionSectionForm['vars']['navs_chunks']['month']) {
-                                dataCollectionSectionForm['vars']['monthNavData'] = { };
-                                dataCollectionSectionForm['vars']['monthNavData']['date'] = monthDate;
-                                dataCollectionSectionForm['vars']['monthNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['month'][monthDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['monthData'].push(dataCollectionSectionForm['vars']['monthNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['monthData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (MONTH)',
-                                        data: dataCollectionSectionForm['vars']['monthData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
+        ],
+        series: [
+            {
+                name: 'NAV',
+                type: 'line',
+                data: [],
             }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['threeMonth']) {
-                dataCollectionSectionForm['vars']['actions']['three-month'] =
-                    {
-                        name: "3 MONTHS",
-                        handler(chart) {
-                            for (var monthDate in dataCollectionSectionForm['vars']['navs_chunks']['threeMonth']) {
-                                dataCollectionSectionForm['vars']['threeMonthNavData'] = { };
-                                dataCollectionSectionForm['vars']['threeMonthNavData']['date'] = monthDate;
-                                dataCollectionSectionForm['vars']['threeMonthNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['threeMonth'][monthDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['threeMonthData'].push(dataCollectionSectionForm['vars']['threeMonthNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['threeMonthData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (3 MONTHS)',
-                                        data: dataCollectionSectionForm['vars']['threeMonthData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
-            }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['sixMonth']) {
-                dataCollectionSectionForm['vars']['actions']['six-month'] =
-                    {
-                        name: "6 MONTHS",
-                        handler(chart) {
-                            for (var monthDate in dataCollectionSectionForm['vars']['navs_chunks']['sixMonth']) {
-                                dataCollectionSectionForm['vars']['sixMonthNavData'] = { };
-                                dataCollectionSectionForm['vars']['sixMonthNavData']['date'] = monthDate;
-                                dataCollectionSectionForm['vars']['sixMonthNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['sixMonth'][monthDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['sixMonthData'].push(dataCollectionSectionForm['vars']['sixMonthNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['sixMonthData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (6 MONTHS)',
-                                        data: dataCollectionSectionForm['vars']['sixMonthData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
-            }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['year']) {
-                dataCollectionSectionForm['vars']['actions']['one-year'] =
-                    {
-                        name: "1 YEAR",
-                        handler(chart) {
-                            for (var yearDate in dataCollectionSectionForm['vars']['navs_chunks']['year']) {
-                                dataCollectionSectionForm['vars']['yearNavData'] = { };
-                                dataCollectionSectionForm['vars']['yearNavData']['date'] = yearDate;
-                                dataCollectionSectionForm['vars']['yearNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['year'][yearDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['yearData'].push(dataCollectionSectionForm['vars']['yearNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['yearData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (1 YEAR)',
-                                        data: dataCollectionSectionForm['vars']['yearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
-            }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['threeYear']) {
-                dataCollectionSectionForm['vars']['actions']['three-year'] =
-                    {
-                        name: "3 YEARS",
-                        handler(chart) {
-                            for (var threeYearDate in dataCollectionSectionForm['vars']['navs_chunks']['threeYear']) {
-                                dataCollectionSectionForm['vars']['threeYearNavData'] = { };
-                                dataCollectionSectionForm['vars']['threeYearNavData']['date'] = threeYearDate;
-                                dataCollectionSectionForm['vars']['threeYearNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['threeYear'][threeYearDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['threeYearData'].push(dataCollectionSectionForm['vars']['threeYearNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['threeYearData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (3 YEARS)',
-                                        data: dataCollectionSectionForm['vars']['threeYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
-            }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['fiveYear']) {
-                dataCollectionSectionForm['vars']['actions']['five-year'] =
-                    {
-                        name: "5 YEARS",
-                        handler(chart) {
-                            for (var fiveYearDate in dataCollectionSectionForm['vars']['navs_chunks']['fiveYear']) {
-                                dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
-                                dataCollectionSectionForm['vars']['fiveYearNavData']['date'] = fiveYearDate;
-                                dataCollectionSectionForm['vars']['fiveYearNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['fiveYear'][fiveYearDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['fiveYearData'].push(dataCollectionSectionForm['vars']['fiveYearNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['fiveYearData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (5 YEARS)',
-                                        data: dataCollectionSectionForm['vars']['fiveYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
-            }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['tenYear']) {
-                dataCollectionSectionForm['vars']['actions']['ten-year'] =
-                    {
-                        name: "10 YEARS",
-                        handler(chart) {
-                            for (var tenYearDate in dataCollectionSectionForm['vars']['navs_chunks']['tenYear']) {
-                                dataCollectionSectionForm['vars']['tenYearNavData'] = { };
-                                dataCollectionSectionForm['vars']['tenYearNavData']['date'] = tenYearDate;
-                                dataCollectionSectionForm['vars']['tenYearNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['tenYear'][tenYearDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['tenYearData'].push(dataCollectionSectionForm['vars']['tenYearNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['tenYearData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'NAVS (10 YEARS)',
-                                        data: dataCollectionSectionForm['vars']['tenYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
-            }
-
-            if (dataCollectionSectionForm['vars']['navs_chunks']['all']) {
-                dataCollectionSectionForm['vars']['actions']['all'] =
-                    {
-                        name: "ALL",
-                        handler(chart) {
-                            for (var allDate in dataCollectionSectionForm['vars']['navs_chunks']['all']) {
-                                dataCollectionSectionForm['vars']['allNavData'] = { };
-                                dataCollectionSectionForm['vars']['allNavData']['date'] = allDate;
-                                dataCollectionSectionForm['vars']['allNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                    dataCollectionSectionForm['vars']['navs_chunks']['all'][allDate][dataCollectionSectionForm['vars']['dataType']];
-
-                                dataCollectionSectionForm['vars']['allData'].push(dataCollectionSectionForm['vars']['allNavData']);
-                            }
-
-                            chart.data.labels = dataCollectionSectionForm['vars']['allData'].map(row => row.date);
-                            chart.data.datasets = [
-                                    {
-                                        label: 'ALL',
-                                        data: dataCollectionSectionForm['vars']['allData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                        pointRadius: 0
-                                    }
-                                ];
-                            chart.update();
-                        }
-                    };
-            }
-
-            dataCollectionSectionForm['vars']['actions']['range'] =
-                {
-                    name: "RANGE",
-                    handler(chart, range) {
-                        for (var rangeDate in dataCollectionSectionForm['vars']['navs_chunks']['range']) {
-                            dataCollectionSectionForm['vars']['rangeNavData'] = { };
-                            dataCollectionSectionForm['vars']['rangeNavData']['date'] = rangeDate;
-                            dataCollectionSectionForm['vars']['rangeNavData'][dataCollectionSectionForm['vars']['dataType']] =
-                                dataCollectionSectionForm['vars']['navs_chunks']['range'][rangeDate][dataCollectionSectionForm['vars']['dataType']];
-
-                            dataCollectionSectionForm['vars']['rangeData'].push(dataCollectionSectionForm['vars']['rangeNavData']);
-                        }
-
-                        chart.data.labels = dataCollectionSectionForm['vars']['rangeData'].map(row => row.date);
-                        chart.data.datasets = [
-                                {
-                                    label: 'RANGE (' + dataCollectionSectionForm['vars']['range'] + ')',
-                                    data: dataCollectionSectionForm['vars']['rangeData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                    pointRadius: 0
-                                }
-                            ];
-                        chart.update();
-                    }
-                };
-
-            //Start with week data and generate chart
-            dataCollectionSectionForm['vars']['navsChart'] = new Chart(document.getElementById('navsChart'),
-                {
-                    type: 'line',
-                    options : {
-                        locale: 'en-IN',
-                        animation: false,
-                        interaction: {
-                            mode: 'nearest',
-                            intersect: false
-                        }
-                    },
-                    data: {
-                        labels: dataCollectionSectionForm['vars']['initData'].map(row => row.date),
-                        datasets: [
-                            {
-                                label: navsText,
-                                data: dataCollectionSectionForm['vars']['initData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]),
-                                pointRadius: 0
-                            }
-                        ]
-                    },
-                    plugins : [
-                        {
-                            afterRender: function(chart, options) {
-                                $('#timeline-buttons').attr('hidden', false);
-                                $('#datatype-buttons').attr('hidden', false);
-                                $('#timeline-loader').attr('hidden', true);
-                                $('#import-loader').attr('hidden', true);
-                                $('#timeline-chart').attr('hidden', false);
-                                $('#navs-table').attr('hidden', false);
-                            }
-                        }
-                    ]
-                }
-            );
-        })();
+        ]
     }
 
-    // if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#{{componentId}}-{{sectionId}}-navs-table')) {
-    //     $('#{{componentId}}-{{sectionId}}-navs-table').DataTable({
-    //         columns: [
-    //             null,
-    //             null,
-    //             null,
-    //             null,
-    //             null,
-    //             null
-    //         ],
-    //         order: [
-    //             [0, 'desc']
-    //         ],
-    //         lengthMenu: [
-    //             [50, 100, -1],
-    //             [50, 100, 'All']
-    //         ]
-    //     });
-    // }
+    dataCollectionSectionForm['vars']['navsChart'].on('rendered', function() {
+        if (!dataCollectionSectionForm['vars']['navsChart']) {
+            return;
+        }
+
+        dataCollectionSectionForm['vars']['navsChart'].resize({
+            width : $('#timeline-chart').width(),
+            height: 400
+        });
+
+        $('#timeline-buttons').attr('hidden', false);
+        $('#datatype-buttons').attr('hidden', false);
+        $('#timeline-loader').attr('hidden', true);
+        $('#import-loader').attr('hidden', true);
+        $('#timeline-chart').attr('hidden', false);
+        $('#navs-table').attr('hidden', false);
+    });
+
+    if (Object.keys(dataCollectionSectionForm['vars']['navs_chunks']).length > 0) {
+        var initDataObj;
+
+        initDataObj = dataCollectionSectionForm['vars']['navs_chunks']['week'];
+        dataCollectionSectionForm['vars']['timeline'] = 'week';
+
+        for (var initData in initDataObj) {
+            dataCollectionSectionForm['vars']['initNavData'] = { };
+            dataCollectionSectionForm['vars']['initNavData']['date'] = initData;
+            dataCollectionSectionForm['vars']['initNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                initDataObj[initData][dataCollectionSectionForm['vars']['dataType']];
+
+            dataCollectionSectionForm['vars']['initData'].push(dataCollectionSectionForm['vars']['initNavData']);
+        }
+
+        dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (WEEK)';
+        dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+        dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['initData'].map(row => row.date);
+        dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+        dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['initData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+        dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+        dataCollectionSectionForm['funcs']['popluateTrendTable']('week');
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['week']) {
+            dataCollectionSectionForm['vars']['actions']['week'] = function() {
+                for (var weekDate in dataCollectionSectionForm['vars']['navs_chunks']['week']) {
+                    dataCollectionSectionForm['vars']['weekNavData'] = { };
+                    dataCollectionSectionForm['vars']['weekNavData']['date'] = weekDate;
+                    dataCollectionSectionForm['vars']['weekNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['week'][weekDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['weekData'].push(dataCollectionSectionForm['vars']['weekNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (WEEK)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['weekData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['weekData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('week');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['month']) {
+            dataCollectionSectionForm['vars']['actions']['month'] = function() {
+                for (var monthDate in dataCollectionSectionForm['vars']['navs_chunks']['month']) {
+                    dataCollectionSectionForm['vars']['monthNavData'] = { };
+                    dataCollectionSectionForm['vars']['monthNavData']['date'] = monthDate;
+                    dataCollectionSectionForm['vars']['monthNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['month'][monthDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['monthData'].push(dataCollectionSectionForm['vars']['monthNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (MONTH)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['monthData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['monthData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('month');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['threeMonth']) {
+            dataCollectionSectionForm['vars']['actions']['threeMonth'] = function() {
+                for (var monthDate in dataCollectionSectionForm['vars']['navs_chunks']['threeMonth']) {
+                    dataCollectionSectionForm['vars']['threeMonthNavData'] = { };
+                    dataCollectionSectionForm['vars']['threeMonthNavData']['date'] = monthDate;
+                    dataCollectionSectionForm['vars']['threeMonthNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['threeMonth'][monthDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['threeMonthData'].push(dataCollectionSectionForm['vars']['threeMonthNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (3 MONTHS)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['threeMonthData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['threeMonthData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('threeMonth');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['sixMonth']) {
+            dataCollectionSectionForm['vars']['actions']['sixMonth'] = function() {
+                for (var monthDate in dataCollectionSectionForm['vars']['navs_chunks']['sixMonth']) {
+                    dataCollectionSectionForm['vars']['sixMonthNavData'] = { };
+                    dataCollectionSectionForm['vars']['sixMonthNavData']['date'] = monthDate;
+                    dataCollectionSectionForm['vars']['sixMonthNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['sixMonth'][monthDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['sixMonthData'].push(dataCollectionSectionForm['vars']['sixMonthNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (6 MONTHS)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['sixMonthData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['sixMonthData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('sixMonth');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['year']) {
+            dataCollectionSectionForm['vars']['actions']['year'] = function() {
+                for (var yearDate in dataCollectionSectionForm['vars']['navs_chunks']['year']) {
+                    dataCollectionSectionForm['vars']['yearNavData'] = { };
+                    dataCollectionSectionForm['vars']['yearNavData']['date'] = yearDate;
+                    dataCollectionSectionForm['vars']['yearNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['year'][yearDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['yearData'].push(dataCollectionSectionForm['vars']['yearNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (1 YEAR)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['yearData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['yearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('year');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['threeYear']) {
+            dataCollectionSectionForm['vars']['actions']['threeYear'] = function() {
+                for (var threeYearDate in dataCollectionSectionForm['vars']['navs_chunks']['threeYear']) {
+                    dataCollectionSectionForm['vars']['threeYearNavData'] = { };
+                    dataCollectionSectionForm['vars']['threeYearNavData']['date'] = threeYearDate;
+                    dataCollectionSectionForm['vars']['threeYearNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['threeYear'][threeYearDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['threeYearData'].push(dataCollectionSectionForm['vars']['threeYearNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (3 YEARS)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['threeYearData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['threeYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('threeYear');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['fiveYear']) {
+            dataCollectionSectionForm['vars']['actions']['fiveYear'] = function() {
+                for (var fiveYearDate in dataCollectionSectionForm['vars']['navs_chunks']['fiveYear']) {
+                    dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
+                    dataCollectionSectionForm['vars']['fiveYearNavData']['date'] = fiveYearDate;
+                    dataCollectionSectionForm['vars']['fiveYearNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['fiveYear'][fiveYearDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['fiveYearData'].push(dataCollectionSectionForm['vars']['fiveYearNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (5 YEARS)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['fiveYearData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['fiveYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('fiveYear');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['tenYear']) {
+            dataCollectionSectionForm['vars']['actions']['tenYear'] = function() {
+                for (var tenYearDate in dataCollectionSectionForm['vars']['navs_chunks']['tenYear']) {
+                    dataCollectionSectionForm['vars']['tenYearNavData'] = { };
+                    dataCollectionSectionForm['vars']['tenYearNavData']['date'] = tenYearDate;
+                    dataCollectionSectionForm['vars']['tenYearNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                        dataCollectionSectionForm['vars']['navs_chunks']['tenYear'][tenYearDate][dataCollectionSectionForm['vars']['dataType']];
+
+                    dataCollectionSectionForm['vars']['tenYearData'].push(dataCollectionSectionForm['vars']['tenYearNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (10 YEARS)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['tenYearData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['tenYearData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('tenYear');
+            }
+        }
+
+        if (dataCollectionSectionForm['vars']['navs_chunks']['all']) {
+            dataCollectionSectionForm['vars']['actions']['all'] = function() {
+                for (var allDate in dataCollectionSectionForm['vars']['navs_chunks']['all']) {
+                    dataCollectionSectionForm['vars']['allNavData'] = { };
+                    dataCollectionSectionForm['vars']['allNavData']['date'] = allDate;
+                    if (dataCollectionSectionForm['vars']['dataType'] === 'diff') {
+                        dataCollectionSectionForm['vars']['allNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                            dataCollectionSectionForm['vars']['navs_chunks']['all'][allDate]['diff_since_inception'];
+                    } else if (dataCollectionSectionForm['vars']['dataType'] === 'diff_percent') {
+                        dataCollectionSectionForm['vars']['allNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                            dataCollectionSectionForm['vars']['navs_chunks']['all'][allDate]['diff_percent_since_inception'];
+                    } else {
+                        dataCollectionSectionForm['vars']['allNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                            dataCollectionSectionForm['vars']['navs_chunks']['all'][allDate][dataCollectionSectionForm['vars']['dataType']];
+                    }
+
+                    dataCollectionSectionForm['vars']['allData'].push(dataCollectionSectionForm['vars']['allNavData']);
+                }
+
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD (ALL)';
+                dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['allData'].map(row => row.date);
+                dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['allData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+                dataCollectionSectionForm['funcs']['popluateTrendTable']('all');
+            }
+        }
+
+        dataCollectionSectionForm['vars']['actions']['range'] = function() {
+            for (var rangeDate in dataCollectionSectionForm['vars']['navs_chunks']['range']) {
+                dataCollectionSectionForm['vars']['rangeNavData'] = { };
+                dataCollectionSectionForm['vars']['rangeNavData']['date'] = rangeDate;
+                dataCollectionSectionForm['vars']['rangeNavData'][dataCollectionSectionForm['vars']['dataType']] =
+                    dataCollectionSectionForm['vars']['navs_chunks']['range'][rangeDate][dataCollectionSectionForm['vars']['dataType']];
+
+                dataCollectionSectionForm['vars']['rangeData'].push(dataCollectionSectionForm['vars']['rangeNavData']);
+            }
+
+            dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD RANGE (' + dataCollectionSectionForm['vars']['range'] + ')'
+            dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['rangeData'].map(row => row.date);
+            dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+            dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+            dataCollectionSectionForm['vars']['navsChartOptions']['series'][0]['data'] = dataCollectionSectionForm['vars']['rangeData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+            dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
+            dataCollectionSectionForm['funcs']['popluateTrendTable']('range');
+        }
+    }
 
     //Activate All button
     var timelineChecked = $("input[type='radio'][name='timeline']:checked");
@@ -707,46 +812,65 @@ dataCollectionSectionForm['funcs']['init'] = function() {
             }
         });
 
-        if (timelineTimeline === 'one-week') {
+        if (timelineTimeline === 'week') {
             dataCollectionSectionForm['vars']['weekData'] = [];
             dataCollectionSectionForm['vars']['weekPerformanceData'] = { };
-            // dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
-        } else if (timelineTimeline === 'one-month') {
-            dataCollectionSectionForm['vars']['monthData'] = [];
-            dataCollectionSectionForm['vars']['monthPerformanceData'] = { };
-            // dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
-        } else if (timelineTimeline === 'three-month') {
-            dataCollectionSectionForm['vars']['threeMonthData'] = [];
-            dataCollectionSectionForm['vars']['threeMonthPerformanceData'] = { };
-            // dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
-        } else if (timelineTimeline === 'six-month') {
-            dataCollectionSectionForm['vars']['sixMonthData'] = [];
-            dataCollectionSectionForm['vars']['sixMonthPerformanceData'] = { };
-            // dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
-        } else if (timelineTimeline === 'one-year') {
-            dataCollectionSectionForm['vars']['yearData'] = [];
-            dataCollectionSectionForm['vars']['yearPerformanceData'] = { };
-            // dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
-        } else if (timelineTimeline === 'three-year') {
+            dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+        } else if (timelineTimeline === 'month') {
+            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['month'] === 'boolean') {
+                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('month', timelineTimeline);
+            } else {
+                dataCollectionSectionForm['vars']['monthData'] = [];
+                dataCollectionSectionForm['vars']['monthPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+            }
+        } else if (timelineTimeline === 'threeMonth') {
+            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['threeMonth'] === 'boolean') {
+                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('threeMonth', timelineTimeline);
+            } else {
+                dataCollectionSectionForm['vars']['threeMonthData'] = [];
+                dataCollectionSectionForm['vars']['threeMonthPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+            }
+        } else if (timelineTimeline === 'sixMonth') {
+            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['sixMonth'] === 'boolean') {
+                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('sixMonth', timelineTimeline);
+            } else {
+                dataCollectionSectionForm['vars']['sixMonthData'] = [];
+                dataCollectionSectionForm['vars']['sixMonthPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+            }
+        } else if (timelineTimeline === 'year') {
+            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['year'] === 'boolean') {
+                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('year', timelineTimeline);
+            } else {
+                dataCollectionSectionForm['vars']['yearData'] = [];
+                dataCollectionSectionForm['vars']['yearPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+            }
+        } else if (timelineTimeline === 'threeYear') {
             if (typeof dataCollectionSectionForm['vars']['navs_chunks']['threeYear'] === 'boolean') {
                 dataCollectionSectionForm['funcs']['getSchemeNavChunks']('threeYear', timelineTimeline);
             } else {
                 dataCollectionSectionForm['vars']['threeYearData'] = [];
                 dataCollectionSectionForm['vars']['threeYearPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
             }
-        } else if (timelineTimeline === 'five-year') {
+        } else if (timelineTimeline === 'fiveYear') {
             if (typeof dataCollectionSectionForm['vars']['navs_chunks']['fiveYear'] === 'boolean') {
                 dataCollectionSectionForm['funcs']['getSchemeNavChunks']('fiveYear', timelineTimeline);
             } else {
                 dataCollectionSectionForm['vars']['fiveYearData'] = [];
                 dataCollectionSectionForm['vars']['fiveYearPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
             }
-        } else if (timelineTimeline === 'ten-year') {
+        } else if (timelineTimeline === 'tenYear') {
             if (typeof dataCollectionSectionForm['vars']['navs_chunks']['tenYear'] === 'boolean') {
                 dataCollectionSectionForm['funcs']['getSchemeNavChunks']('tenYear', timelineTimeline);
             } else {
                 dataCollectionSectionForm['vars']['tenYearData'] = [];
                 dataCollectionSectionForm['vars']['tenYearPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
             }
         } else if (timelineTimeline === 'all') {
             if (typeof dataCollectionSectionForm['vars']['navs_chunks']['all'] === 'boolean') {
@@ -754,36 +878,20 @@ dataCollectionSectionForm['funcs']['init'] = function() {
             } else {
                 dataCollectionSectionForm['vars']['allData'] = [];
                 dataCollectionSectionForm['vars']['allPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
             }
         } else if (timelineTimeline === 'range') {
             $('#{{componentId}}-{{sectionId}}-date_range').parents('.form-group').removeClass('d-none');
 
             return;
         }
-
-        dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
     });
 
-    //Activate Return Amount button
-    var datatypeChecked = $("input[type='radio'][name='datatype']:checked");
-    var datatypeDatatype = $(datatypeChecked).data('value');
-    var datatypeLabels = $(datatypeChecked).parents('.btn-group').children('label');
-    $(datatypeLabels).each(function(index, datatypeLabel) {
-        $(datatypeLabel).removeClass('focus active disabled');
-        $(datatypeLabel).css('cursor', 'pointer');
-
-        if ($(datatypeLabel).children('input')[0].id === datatypeDatatype) {
-            $(datatypeLabel).addClass('focus active disabled');
-            $(datatypeLabel).css('cursor', 'default');
-        }
-    });
-
-    $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').off();
-    $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').click(function() {
-        datatypeChecked = $("input[type='radio'][name='datatype']:checked");
-        datatypeDatatype = $(datatypeChecked).data('value');
-        datatypeLabels = $(datatypeChecked).parents('.btn-group').children('label');
-
+    if ($("input[type='radio'][name='datatype']:checked").length > 0) {
+        //Activate Return Amount button
+        var datatypeChecked = $("input[type='radio'][name='datatype']:checked");
+        var datatypeDatatype = $(datatypeChecked).data('value');
+        var datatypeLabels = $(datatypeChecked).parents('.btn-group').children('label');
         $(datatypeLabels).each(function(index, datatypeLabel) {
             $(datatypeLabel).removeClass('focus active disabled');
             $(datatypeLabel).css('cursor', 'pointer');
@@ -794,72 +902,118 @@ dataCollectionSectionForm['funcs']['init'] = function() {
             }
         });
 
-        dataCollectionSectionForm['vars']['dataType'] = datatypeDatatype;
+        $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').off();
+        $("input[type='radio'][name='datatype']:checked").parents('.btn-group').children('label').children('input').click(function() {
+            datatypeChecked = $("input[type='radio'][name='datatype']:checked");
+            datatypeDatatype = $(datatypeChecked).data('value');
+            if (datatypeDatatype === 'nav') {
+                dataCollectionSectionForm['vars']['dataTypeName'] = 'NAV';
+            } else if (datatypeDatatype === 'diff') {
+                dataCollectionSectionForm['vars']['dataTypeName'] = 'DIFF';
+            } else if (datatypeDatatype === 'diff_percent') {
+                dataCollectionSectionForm['vars']['dataTypeName'] = 'PERCENT';
+            }
+            datatypeLabels = $(datatypeChecked).parents('.btn-group').children('label');
 
-        if (dataCollectionSectionForm['vars']['rangeActive'] === true) {
-            dataCollectionSectionForm['vars']['rangeData'] = [];
-            dataCollectionSectionForm['vars']['rangePerformanceData'] = { };
-            dataCollectionSectionForm['vars']['actions']['range'].handler(dataCollectionSectionForm['vars']['navsChart']);
+            $(datatypeLabels).each(function(index, datatypeLabel) {
+                $(datatypeLabel).removeClass('focus active disabled');
+                $(datatypeLabel).css('cursor', 'pointer');
 
-            return;
-        }
+                if ($(datatypeLabel).children('input')[0].id === datatypeDatatype) {
+                    $(datatypeLabel).addClass('focus active disabled');
+                    $(datatypeLabel).css('cursor', 'default');
+                }
+            });
 
-        $($("input[type='radio'][name='timeline']:checked").parents('.btn-group').children('label')).each(function(index, label) {
-            if ($(label).hasClass('active')) {
-                timelineTimeline = $(label).children('input').data('value');
+            dataCollectionSectionForm['vars']['dataType'] = datatypeDatatype;
+
+            if (dataCollectionSectionForm['vars']['rangeActive'] === true) {
+                dataCollectionSectionForm['vars']['rangeData'] = [];
+                dataCollectionSectionForm['vars']['rangePerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions']['range']();
+
+                return;
+            }
+
+            $($("input[type='radio'][name='timeline']:checked").parents('.btn-group').children('label')).each(function(index, label) {
+                if ($(label).hasClass('active')) {
+                    timelineTimeline = $(label).children('input').data('value');
+                }
+            });
+
+            if (timelineTimeline === 'week') {
+                dataCollectionSectionForm['vars']['weekData'] = [];
+                dataCollectionSectionForm['vars']['weekPerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+            } else if (timelineTimeline === 'month') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['month'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('month', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['monthData'] = [];
+                    dataCollectionSectionForm['vars']['monthPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'threeMonth') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['threeMonth'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('threeMonth', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['threeMonthData'] = [];
+                    dataCollectionSectionForm['vars']['threeMonthPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'sixMonth') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['sixMonth'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('sixMonth', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['sixMonthData'] = [];
+                    dataCollectionSectionForm['vars']['sixMonthPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'year') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['year'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('year', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['yearData'] = [];
+                    dataCollectionSectionForm['vars']['yearPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'threeYear') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['threeYear'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('threeYear', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['threeYearData'] = [];
+                    dataCollectionSectionForm['vars']['threeYearPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'fiveYear') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['fiveYear'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('fiveYear', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['fiveYearData'] = [];
+                    dataCollectionSectionForm['vars']['fiveYearPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'tenYear') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['tenYear'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('tenYear', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['tenYearData'] = [];
+                    dataCollectionSectionForm['vars']['tenYearPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'all') {
+                if (typeof dataCollectionSectionForm['vars']['navs_chunks']['all'] === 'boolean') {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('all', timelineTimeline);
+                } else {
+                    dataCollectionSectionForm['vars']['allData'] = [];
+                    dataCollectionSectionForm['vars']['allPerformanceData'] = { };
+                    dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                }
+            } else if (timelineTimeline === 'range') {
+                return;
             }
         });
-
-        if (timelineTimeline === 'one-week') {
-            dataCollectionSectionForm['vars']['weekData'] = [];
-            dataCollectionSectionForm['vars']['weekPerformanceData'] = { };
-        } else if (timelineTimeline === 'one-month') {
-            dataCollectionSectionForm['vars']['monthData'] = [];
-            dataCollectionSectionForm['vars']['monthPerformanceData'] = { };
-        } else if (timelineTimeline === 'three-month') {
-            dataCollectionSectionForm['vars']['threeMonthData'] = [];
-            dataCollectionSectionForm['vars']['threeMonthPerformanceData'] = { };
-        } else if (timelineTimeline === 'six-month') {
-            dataCollectionSectionForm['vars']['sixMonthData'] = [];
-            dataCollectionSectionForm['vars']['sixMonthPerformanceData'] = { };
-        } else if (timelineTimeline === 'one-year') {
-            dataCollectionSectionForm['vars']['yearData'] = [];
-            dataCollectionSectionForm['vars']['yearPerformanceData'] = { };
-        } else if (timelineTimeline === 'three-year') {
-            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['threeYear'] === 'boolean') {
-                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('threeYear', timelineTimeline);
-            } else {
-                dataCollectionSectionForm['vars']['threeYearData'] = [];
-                dataCollectionSectionForm['vars']['threeYearPerformanceData'] = { };
-            }
-        } else if (timelineTimeline === 'five-year') {
-            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['fiveYear'] === 'boolean') {
-                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('fiveYear', timelineTimeline);
-            } else {
-                dataCollectionSectionForm['vars']['fiveYearData'] = [];
-                dataCollectionSectionForm['vars']['fiveYearPerformanceData'] = { };
-            }
-        } else if (timelineTimeline === 'ten-year') {
-            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['tenYear'] === 'boolean') {
-                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('tenYear', timelineTimeline);
-            } else {
-                dataCollectionSectionForm['vars']['tenYearData'] = [];
-                dataCollectionSectionForm['vars']['tenYearPerformanceData'] = { };
-            }
-        } else if (timelineTimeline === 'all') {
-            if (typeof dataCollectionSectionForm['vars']['navs_chunks']['all'] === 'boolean') {
-                dataCollectionSectionForm['funcs']['getSchemeNavChunks']('all', timelineTimeline);
-            } else {
-                dataCollectionSectionForm['vars']['allData'] = [];
-                dataCollectionSectionForm['vars']['allPerformanceData'] = { };
-            }
-            // dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
-        } else if (timelineTimeline === 'range') {
-            return;
-        }
-
-        dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
-    });
+    }
 
     $('#{{componentId}}-{{sectionId}}-import').off();
     $('#{{componentId}}-{{sectionId}}-import').click(function(e) {
@@ -906,7 +1060,7 @@ dataCollectionSectionForm['funcs']['init'] = function() {
     });
 }
 
-dataCollectionSectionForm['funcs']['getSchemeNavChunks'] = function(chunksize, timelineTimeline, range = null) {
+dataCollectionSectionForm['funcs']['getSchemeNavChunks'] = function(chunksize, timelineTimeline, range = null, getTrendData = false) {
     var postData = { };
     postData[$('#security-token').attr('name')] = $('#security-token').val();
     postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
@@ -918,14 +1072,21 @@ dataCollectionSectionForm['funcs']['getSchemeNavChunks'] = function(chunksize, t
 
     $.post('{{links.url("mf/schemes/getSchemeNavChunks")}}', postData, function(response) {
         if (response.responseCode == 0 && response.responseData.chunks) {
-            if (chunksize === 'all') {
-                dataCollectionSectionForm['vars']['navs_chunks'] = response.responseData.chunks;
+            if (getTrendData) {
+                dataCollectionSectionForm['vars']['trend'][chunksize] = response.responseData.trend;
+                dataCollectionSectionForm['funcs']['popluateTrendTable'](chunksize);
             } else {
-                dataCollectionSectionForm['vars']['navs_chunks'][chunksize] = response.responseData.chunks;
+                if (chunksize === 'all') {
+                    dataCollectionSectionForm['vars']['navs_chunks'] = response.responseData.chunks;
+                    dataCollectionSectionForm['vars']['trend']['all'] = response.responseData.trend;
+                } else {
+                    dataCollectionSectionForm['vars']['navs_chunks'][chunksize] = response.responseData.chunks;
+                    dataCollectionSectionForm['vars']['trend'][chunksize] = response.responseData.trend;
+                }
+                dataCollectionSectionForm['vars'][chunksize + 'Data'] = [];
+                dataCollectionSectionForm['vars'][chunksize + 'PerformanceData'] = { };
+                dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
             }
-            dataCollectionSectionForm['vars'][chunksize + 'Data'] = [];
-            dataCollectionSectionForm['vars'][chunksize + 'PerformanceData'] = { };
-            dataCollectionSectionForm['vars']['actions'][timelineTimeline].handler(dataCollectionSectionForm['vars']['navsChart']);
         } else {
             paginatedPNotify('error', response.responseMessage);
         }
@@ -937,10 +1098,103 @@ dataCollectionSectionForm['funcs']['getSchemeNavChunks'] = function(chunksize, t
     }, 'json');
 }
 
+dataCollectionSectionForm['funcs']['popluateTrendTable'] = function(trend) {
+    if (dataCollectionSectionForm['vars']['trend'][trend]) {
+        $('#trend-days').html('Trend days (' + dataCollectionSectionForm['vars']['trend'][trend]['totalDays'] + ')')
+        var trendHtml = '<tr>';
+
+        if (dataCollectionSectionForm['vars']['trend'][trend]['up']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['up'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['down']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['down'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['neutral']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['neutral'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['minus5']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['minus5'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['minus5tominus4']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['minus5tominus4'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['minus4tominus3']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['minus4tominus3'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['minus3tominus2']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['minus3tominus2'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['minus2tominus1']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['minus2tominus1'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['minus1to0']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['minus1to0'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend][0]) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend][0] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['0to1']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['0to1'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['1to2']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['1to2'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['2to3']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['2to3'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['3to4']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['3to4'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['4to5']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['4to5'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        if (dataCollectionSectionForm['vars']['trend'][trend]['plus5']) {
+            trendHtml += '<td>' + dataCollectionSectionForm['vars']['trend'][trend]['plus5'] + '</td>';
+        } else {
+            trendHtml += '<td>-</td>';
+        }
+        trendHtml += '</tr>';
+
+        $('#{{componentId}}-{{sectionId}}-trends-table tbody').html(trendHtml);
+    } else {
+        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](trend, null, null, true);
+        $('#{{componentId}}-{{sectionId}}-trends-table tbody').html('');
+    }
+}
+
 dataCollectionSectionForm['funcs']['browse'] = function(url) {
     $('#{{componentId}}-{{sectionId}}-navs-link').attr('href', url);
-    //eslint-disable-next-line
-    console.log($('#{{componentId}}-{{sectionId}}-navs-link'));
+
     BazContentLoader.loadAjax($('#{{componentId}}-{{sectionId}}-navs-link'), {
         ajaxBefore                      : function () {
                                             Pace.restart();
@@ -958,10 +1212,319 @@ dataCollectionSectionForm['funcs']['browse'] = function(url) {
     });
 }
 
+dataCollectionSectionForm['funcs']['addToCompare'] = function() {
+    if ($('#{{componentId}}-{{sectionId}}-compare-table tbody tr').length >= 4) {
+        paginatedPNotify('error', {text : 'You can only compare 4 schemes!'});
+
+        return;
+    }
+
+    $('#compare-div').attr('hidden', false);
+    $('#no-compare').attr('hidden', true);
+
+    var scheme = dataCollectionSectionForm['vars']['categorySchemes'][$('#{{componentId}}-{{sectionId}}-scheme_id').val()];
+
+    dataCollectionSectionForm['vars']['compareSchemes'][scheme['id']] = scheme;
+
+    var compareHtml = '<tr>';
+    if (scheme['name']) {
+        compareHtml += '<td>' + scheme['name'] + '</td>';
+    } else {
+        compareHtml += '<td>-</td>';
+    }
+    if (scheme['start_date']) {
+        compareHtml += '<td>' + scheme['start_date'] + '</td>';
+    } else {
+        compareHtml += '<td>-</td>';
+    }
+    if (scheme['navs_last_updated']) {
+        compareHtml += '<td>' + scheme['navs_last_updated'] + '</td>';
+    } else {
+        compareHtml += '<td>-</td>';
+    }
+    compareHtml += '<td><button class="btn btn-xs btn-danger removeScheme" data-id="' + scheme['id'] + '" ><i class="fas fa-fw fa-xmark"></i></button></td>';
+    compareHtml += '</tr>';
+
+    $('#{{componentId}}-{{sectionId}}-compare-table tbody').append(compareHtml);
+
+    $('.removeScheme').off();
+    $('.removeScheme').click(function(e) {
+        e.preventDefault();
+
+        delete dataCollectionSectionForm['vars']['compareSchemes'][$(this).data('id')];
+
+        $(this).parents('tr').remove();
+
+        if ($('#{{componentId}}-{{sectionId}}-compare-table tbody tr').length === 0) {
+            $('#compare-div').attr('hidden', true);
+            // $('#can-compare').attr('hidden', true);
+            $('#no-compare').attr('hidden', false);
+        }
+
+        if ($('#{{componentId}}-{{sectionId}}-compare-table tbody tr').length < 2) {
+            $('#can-compare').attr('hidden', true);
+        }
+
+        dataCollectionSectionForm['funcs']['processCompareData']();
+    });
+
+    if ($('#{{componentId}}-{{sectionId}}-compare-table tbody tr').length > 1) {
+        $('#can-compare').attr('hidden', false);
+    } else {
+        // $('#can-compare').attr('hidden', true);
+    }
+
+    $('#{{componentId}}-{{sectionId}}-scheme_id').val(0).trigger('change');
+
+    dataCollectionSectionForm['funcs']['getSchemeData'](scheme['id']);
+}
+
+dataCollectionSectionForm['funcs']['getSchemeData'] = function(id) {
+    var postData = { };
+    postData[$('#security-token').attr('name')] = $('#security-token').val();
+    postData['scheme_id'] = id;
+
+    $.post('{{links.url("mf/schemes/getProcessedSchemeData")}}', postData, function(response) {
+        if (response.tokenKey && response.token) {
+            $("#security-token").attr("name", response.tokenKey);
+            $("#security-token").val(response.token);
+        }
+
+        if (response.responseCode === 0) {
+            if (response.responseData.navs_chunks &&
+                response.responseData.rolling_returns &&
+                response.responseData.rolling_periods
+            ) {
+                dataCollectionSectionForm['vars']['compareSchemes'][id]['compareData'] = response.responseData;
+                dataCollectionSectionForm['funcs']['processCompareData']();
+            } else {
+                paginatedPNotify('error', {
+                    text : 'Scheme data not found!'
+                });
+            }
+        } else {
+            paginatedPNotify('error', {
+                text : response.responseMessage
+            });
+        }
+    }, 'json');
+}
+
+dataCollectionSectionForm['funcs']['processCompareData'] = function() {
+    dataCollectionSectionForm['vars']['compareSchemesParams']['start_date'] = '2001-01-01';
+    dataCollectionSectionForm['vars']['compareSchemesParams']['end_date'] = dayjs().format('YYYY-MM-DD');
+
+    dataCollectionSectionForm['vars']['compareSchemesParams']['chunks'] = { };
+
+    $.each(['week', 'month', 'threeMonth', 'sixMonth', 'year', 'threeYear', 'fiveYear', 'tenYear', 'all'], function(index, chunk) {
+        dataCollectionSectionForm['vars']['compareSchemesParams']['chunks'][chunk] = true;
+    });
+
+    dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_returns'] = { };
+    $.each(['year', 'two_year', 'three_year', 'five_year', 'seven_year', 'ten_year', 'fifteen_year'], function(index, rrTerm) {
+        dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_returns'][rrTerm] = true;
+    });
+
+    dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_periods'] = {
+        "year" : {
+            "id": "year",
+            "name": "ONE YEAR"
+        },
+        "two_year" : {
+            "id": "two_year",
+            "name": "TWO YEAR"
+        },
+        "three_year" : {
+            "id": "three_year",
+            "name": "THREE YEAR"
+        },
+        "five_year" : {
+            "id": "five_year",
+            "name": "FIVE YEAR"
+        },
+        "seven_year" : {
+            "id": "seven_year",
+            "name": "SEVEN YEAR"
+        },
+        "ten_year" : {
+            "id": "ten_year",
+            "name": "TEN YEAR"
+        },
+        "fifteen_year" : {
+            "id": "fifteen_year",
+            "name": "FIFTEEN YEAR"
+        }
+    }
+
+    if (Object.keys(dataCollectionSectionForm['vars']['compareSchemes']).length === 0) {
+        return;
+    }
+
+    for (var schemeId in dataCollectionSectionForm['vars']['compareSchemes']) {
+        dayjs.extend(dayjs_plugin_minMax);
+
+        var maxDate =
+            dayjs.max(
+                dayjs(dataCollectionSectionForm['vars']['compareSchemesParams']['start_date']),
+                dayjs(dataCollectionSectionForm['vars']['compareSchemes'][schemeId]['start_date'])
+            );
+
+        var minDate =
+            dayjs.min(
+                dayjs(dataCollectionSectionForm['vars']['compareSchemesParams']['end_date']),
+                dayjs(dataCollectionSectionForm['vars']['compareSchemes'][schemeId]['navs_last_updated'])
+            );
+
+        dataCollectionSectionForm['vars']['compareSchemesParams']['start_date'] = maxDate.format('YYYY-MM-DD');
+        dataCollectionSectionForm['vars']['compareSchemesParams']['end_date'] = minDate.format('YYYY-MM-DD');
+
+        var compareData = dataCollectionSectionForm['vars']['compareSchemes'][schemeId]['compareData'];
+
+        for (var dataType in compareData) {
+            if (dataType === 'navs_chunks') {
+                for (var chunk in compareData[dataType]) {
+                    if (compareData[dataType][chunk] === false) {
+                        dataCollectionSectionForm['vars']['compareSchemesParams']['chunks'][chunk] = false;
+                    }
+                }
+            } else if (dataType === 'rolling_returns') {
+                for (var rrTerm in compareData[dataType]) {
+                    if (compareData[dataType][rrTerm] === false) {
+                        dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_returns'][rrTerm] = false;
+                    }
+                }
+            }
+        }
+    }
+    //eslint-disable-next-line
+    console.log(dataCollectionSectionForm['vars']['compareSchemesParams']);
+
+    for (var availableChunk in dataCollectionSectionForm['vars']['compareSchemesParams']['chunks']) {
+        if (dataCollectionSectionForm['vars']['compareSchemesParams']['chunks'][availableChunk] === false) {
+            $('#' + availableChunk).parents('label').attr('hidden', true);
+        } else {
+            $('#' + availableChunk).parents('label').attr('hidden', false);
+        }
+    }
+
+    for (var availableRRTerm in dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_returns']) {
+        if (dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_returns'][availableRRTerm] === false) {
+            delete dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_periods'][availableRRTerm];
+        }
+    }
+    $('#{{componentId}}-{{sectionId}}-rolling_period').empty().trigger('change');
+    for (var rollingPeriod in dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_periods']) {
+        var newOption = new Option(
+            dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_periods'][rollingPeriod]['name'],
+            dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_periods'][rollingPeriod]['id'],
+            false,
+            false
+        );
+
+        $('#{{componentId}}-{{sectionId}}-rolling_period').append(newOption).val('year').trigger('change');
+    }
+
+    dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr'].setDate(dataCollectionSectionForm['vars']['compareSchemesParams']['start_date']);
+    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate =
+        dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr']['config']['minDate'] =
+            dataCollectionSectionForm['vars']['compareSchemesParams']['start_date'];
+    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate =
+        dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr']['config']['maxDate'] =
+            dayjs(dataCollectionSectionForm['vars']['compareSchemesParams']['end_date']).subtract(1, 'year').format('YYYY-MM-DD');
+
+}
+
 setTimeout(function(){
     $(document).ready(function() {
-        dataCollectionSectionForm['funcs']['init']();
+        if (dataCollectionSectionForm['vars']['compare'] == false) {
+            dataCollectionSectionForm['funcs']['init']();
+        }
     });
 }, 1000);
+
+dataCollectionSection =
+    $.extend(dataCollectionSection, {
+        '{{componentId}}-{{sectionId}}-category_id'                 : {
+            placeholder: "SELECT CATEGORY",
+            afterInit: function() {
+                $('#{{componentId}}-{{sectionId}}-category_id').on('select2:select', function(e) {
+                    $('#{{componentId}}-{{sectionId}}-scheme_id').empty().trigger('change');
+                    $('#{{componentId}}-{{sectionId}}-scheme_id').attr('disabled', false);
+                });
+            }
+        },
+        '{{componentId}}-{{sectionId}}-scheme_id'                   : {
+            placeholder: "SEARCH SCHEME",
+            "ajax"          : {
+                url         : "{{links.url('mf/schemes/searchSchemesForCategory')}}",
+                dataType    : "json",
+                method      : "post",
+                data: function(params) {
+                    var query = { };
+                    query[$('#security-token').attr('name')] = $('#security-token').val();
+                    query['category_id'] = $('#{{componentId}}-{{sectionId}}-category_id').val();
+                    query['search'] = params.term;
+
+                    return query;
+                },
+                processResults: function(response) {
+                    if (response.responseData.schemes) {
+                        dataCollectionSectionForm['vars']['categorySchemes'] = response.responseData.schemes;
+
+                        var schemesData = [];
+
+                        for (var scheme in response.responseData.schemes) {
+                            if (dataCollectionSectionForm['vars']['compareSchemes'][response.responseData.schemes[scheme]["id"]]) {
+                                continue;
+                            }
+
+                            schemesData.push({
+                                "id"    : response.responseData.schemes[scheme]["id"],
+                                "text"  : response.responseData.schemes[scheme]["name"]
+                            });
+                        }
+
+                        return {
+                            results: schemesData
+                        }
+                    } else {
+                        return {
+                            results : []
+                        }
+                    }
+                }
+            },
+            minimumInputLength : 3,
+            afterInit: function() {
+                $('#{{componentId}}-{{sectionId}}-scheme_id').on('select2:select', function(e) {
+                    dataCollectionSectionForm['funcs']['addToCompare']();
+                    dataCollectionSectionForm['funcs']['init']();
+                });
+            }
+        },
+        '{{componentId}}-{{sectionId}}-date_range'                         : {
+            dateFormat          : "Y-m-d",
+            altFormat           : "d-m-Y",
+            allowInput          : true,
+            static              : true,
+            mode                : 'range',
+            minDate             : "2000-01-01",
+            maxDate             : "today",
+            onChange: function(selectedDates, dateStr, instance) {
+                if (dateStr.includes('to')) {
+                    dataCollectionSectionForm['funcs']['getSchemeNavChunks']('range', 'range', dateStr);
+                    dataCollectionSectionForm['vars']['rangeActive'] = true;
+                    dataCollectionSectionForm['vars']['range'] = dateStr;
+                }
+            },
+            afterInit: function() {
+                if (dataCollectionSectionForm['vars']['compare'] == false) {
+                    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate = dataCollectionSectionForm['vars']['scheme']['start_date'];
+                    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate = dataCollectionSectionForm['vars']['scheme']['navs_last_updated'];
+                }
+            }
+        }
+    });
+
 </script>
 <!-- htmlmin:ignore -->

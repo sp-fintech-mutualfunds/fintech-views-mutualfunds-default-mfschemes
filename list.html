@@ -6,15 +6,20 @@
             'componentId'                   : componentId,
             'parentComponentId'             : parent,
             'sectionId'                     : 'main',
-            'contentType'                   : 'section',
+            'contentType'                   : 'sectionWithForm',
             'cardHeader'                    : true,
-            'cardFooter'                    : false,
+            'cardFooter'                    : true,
             'cardShowTools'                 : ['maximize'],
             'cardType'                      : 'info',
             'cardIcon'                      : 'equals',
             'cardTitle'                     : 'Compare Schemes',
             'cardAdditionalClass'           : 'rounded-0',
-            'cardBodyInclude'               : 'schemes/compare'
+            'cardBodyInclude'               : 'schemes/compare',
+            'formButtons'                   :
+            [
+                'cancelActionUrl'               : 'mf/schemes',
+                'closeActionUrl'                : 'mf/schemes'
+            ]
         ]
     )}}
 {% else %}

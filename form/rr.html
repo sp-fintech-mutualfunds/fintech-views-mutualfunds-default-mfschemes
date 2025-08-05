@@ -239,6 +239,12 @@ if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
 if (!dataCollectionSectionForm['vars']) {
     dataCollectionSectionForm['vars'] = { };
 }
+
+dataCollectionSectionForm['vars']['compare'] = '{{compare}}';
+if (dataCollectionSectionForm['vars']['compare'] == true) {
+    //
+}
+
 dataCollectionSectionForm['vars']['rr_period'] = null;
 dataCollectionSectionForm['vars']['rr_start_date'] = '';
 
@@ -246,77 +252,150 @@ if (!dataCollectionSectionForm['funcs']) {
     dataCollectionSectionForm['funcs'] = { };
 }
 
-dataCollectionSectionForm['funcs']['initRRChart'] = function() {
+dataCollectionSectionForm['funcs']['initRRChart'] = function(compare = false) {
     dataCollectionSectionForm['vars']['rrChart'] = echarts.init(document.getElementById('rrChart'), 'macarons');
 
+    dataCollectionSectionForm['vars']['rrChart'].off('rendered');
     dataCollectionSectionForm['vars']['rrChart'].on('rendered', function() {
-        if (!dataCollectionSectionForm['vars']['rrChart']) {
-            return;
+        if (dataCollectionSectionForm['vars'] &&
+            dataCollectionSectionForm['vars']['rrChart']
+        ) {
+            if ($('#rr-chart').width() > 0) {
+                dataCollectionSectionForm['vars']['rrChart'].resize({
+                    width : $('#rr-chart').width(),
+                    height: 400
+                });
+            }
         }
-
-        dataCollectionSectionForm['vars']['rrChart'].resize({
-            width : $('#rr-chart').width(),
-            height: 400
-        });
     });
 }
 
 setTimeout(function(){
     $(document).ready(function() {
-        dataCollectionSectionForm['funcs']['initRRChart']();
+        if (dataCollectionSectionForm['vars']['compare'] == false) {
+            dataCollectionSectionForm['funcs']['initRRChart']();
+        }
     });
 }, 1000);
 
-dataCollectionSection =
-    $.extend(dataCollectionSection, {
-        '{{componentId}}-{{sectionId}}-navs_start_date'                     : { },
-        '{{componentId}}-{{sectionId}}-navs_end_date'                       : { },
-        '{{componentId}}-{{sectionId}}-rolling_period'                      : {
-            placeholder : 'SELECT ROLLING PERIOD',
-            afterInit : function() {
-                dataCollectionSectionForm['vars']['rr_period'] = $('#{{componentId}}-{{sectionId}}-rolling_period').val();
-
-                $('#{{componentId}}-{{sectionId}}-rolling_period').on('select2:select', function(e) {
-                    dataCollectionSectionForm['vars']['rr_period'] = e.params.data.id;
-
-                    if (dataCollectionSectionForm['vars']['rr_start_date'] !== '') {
-                        dataCollectionSectionForm['funcs']['getSchemeRollingReturns']();
+if (dataCollectionSectionForm['vars']['compare'] == false) {//Need this condition else compare will not work.
+    dataCollectionSection =
+        $.extend(dataCollectionSection, {
+            '{{componentId}}-{{sectionId}}-date_range'                  : {
+                dateFormat          : "Y-m-d",
+                altFormat           : "d-m-Y",
+                allowInput          : true,
+                static              : true,
+                mode                : 'range',
+                minDate             : "2000-01-01",
+                maxDate             : "today",
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (dateStr.includes('to')) {
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks']('range', dateStr);
+                        dataCollectionSectionForm['vars']['rangeActive'] = true;
+                        dataCollectionSectionForm['vars']['range'] = dateStr;
                     }
-                });
-            }
-        },
-        '{{componentId}}-{{sectionId}}-start_date'                          : {
-            dateFormat          : "Y-m-d",
-            altFormat           : "d-m-Y",
-            allowInput          : true,
-            static              : true,
-            minDate             : dataCollectionSectionForm['vars']['scheme']['start_date'],
-            maxDate             : "today",
-            onChange: function(selectedDates, dateStr, instance) {
-                if (dateStr !== '') {
-                    dataCollectionSectionForm['vars']['rr_start_date'] = dateStr;
-
-                    if (dataCollectionSectionForm['vars']['rr_period'] && dataCollectionSectionForm['vars']['rr_period'] != '0') {
-                        dataCollectionSectionForm['funcs']['getSchemeRollingReturns']();
-                    }
+                },
+                afterInit: function() {
+                    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate = dataCollectionSectionForm['vars']['scheme']['start_date'];
+                    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate = dataCollectionSectionForm['vars']['scheme']['navs_last_updated'];
                 }
             },
-            afterInit : function() {
-                dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr']['config']['maxDate'] =
-                    dayjs(dataCollectionSectionForm['vars']['scheme']['navs_last_updated']).subtract(1, 'year').format('YYYY-MM-DD');
+            '{{componentId}}-{{sectionId}}-navs_start_date'                     : {
+                afterInit: function() {
+                    $('#{{componentId}}-{{sectionId}}-import').off();
+                    $('#{{componentId}}-{{sectionId}}-import').click(function(e) {
+                        e.preventDefault();
 
-                dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr'].setDate(dataCollectionSectionForm['vars']['scheme']['start_date']);
-                dataCollectionSectionForm['vars']['rr_start_date'] = dataCollectionSectionForm['vars']['scheme']['start_date'];
-            }
-        },
-        '{{componentId}}-{{sectionId}}-form'                                    : {
-            ignore      : ':submit, :reset, :image, :hidden, .ignore, .cr-slider',
-            rules: {
+                        var thisButton = $(this);
+                        $(thisButton).addClass('disabled');
+                        $(thisButton).children('i').attr('hidden', false);
+
+                        $('#timeline-buttons').attr('hidden', true);
+                        $('#datatype-buttons').attr('hidden', true);
+                        $('#timeline-import').attr('hidden', false);
+                        $('#timeline-chart').attr('hidden', true);
+                        $('#navs-table').attr('hidden', true);
+
+                        var postData = { };
+                        postData[$('#security-token').attr('name')] = $('#security-token').val();
+                        postData['get_all_navs'] = true;
+                        postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
+
+                        $.post('{{links.url("mf/extractdata/getAllNavData")}}', postData, function(response) {
+                            $(thisButton).removeClass('disabled');
+                            $(thisButton).children('i').attr('hidden', true);
+
+                            $('#timeline-buttons').attr('hidden', false);
+                            $('#datatype-buttons').attr('hidden', false);
+                            $('#timeline-import').attr('hidden', true);
+                            $('#timeline-chart').attr('hidden', false);
+                            $('#navs-table').attr('hidden', false);
+
+                            if (response.responseCode == 0) {
+                                paginatedPNotify('success', response.responseMessage);
+
+                                dataCollectionSectionForm['funcs']['browse']($(thisButton).attr('href'));
+                            } else {
+                                paginatedPNotify('error', response.responseMessage);
+                            }
+
+                            if (response.tokenKey && response.token) {
+                                $("#security-token").attr("name", response.tokenKey);
+                                $("#security-token").val(response.token);
+                            }
+                        }, 'json');
+                    });
+                }
             },
-            messages: {
+            '{{componentId}}-{{sectionId}}-navs_end_date'                       : { },
+            '{{componentId}}-{{sectionId}}-rolling_period'                      : {
+                placeholder : 'SELECT ROLLING PERIOD',
+                afterInit : function() {
+                    dataCollectionSectionForm['vars']['rr_period'] = $('#{{componentId}}-{{sectionId}}-rolling_period').val();
+
+                    $('#{{componentId}}-{{sectionId}}-rolling_period').on('select2:select', function(e) {
+                        dataCollectionSectionForm['vars']['rr_period'] = e.params.data.id;
+
+                        if (dataCollectionSectionForm['vars']['rr_start_date'] !== '') {
+                            dataCollectionSectionForm['funcs']['getSchemeRollingReturns']();
+                        }
+                    });
+                }
+            },
+            '{{componentId}}-{{sectionId}}-start_date'                          : {
+                dateFormat          : "Y-m-d",
+                altFormat           : "d-m-Y",
+                allowInput          : true,
+                static              : true,
+                minDate             : dataCollectionSectionForm['vars']['scheme']['start_date'],
+                maxDate             : "today",
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (dateStr !== '') {
+                        dataCollectionSectionForm['vars']['rr_start_date'] = dateStr;
+
+                        if (dataCollectionSectionForm['vars']['rr_period'] && dataCollectionSectionForm['vars']['rr_period'] != '0') {
+                            dataCollectionSectionForm['funcs']['getSchemeRollingReturns']();
+                        }
+                    }
+                },
+                afterInit : function() {
+                    dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr']['config']['maxDate'] =
+                        dayjs(dataCollectionSectionForm['vars']['scheme']['navs_last_updated']).subtract(1, 'year').format('YYYY-MM-DD');
+
+                    dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr'].setDate(dataCollectionSectionForm['vars']['scheme']['start_date']);
+                    dataCollectionSectionForm['vars']['rr_start_date'] = dataCollectionSectionForm['vars']['scheme']['start_date'];
+                }
+            },
+            '{{componentId}}-{{sectionId}}-form'                                    : {
+                ignore      : ':submit, :reset, :image, :hidden, .ignore, .cr-slider',
+                rules: {
+                },
+                messages: {
+                }
             }
-        }
-    });
+        });
+}
 
 dataCollectionSectionForm['funcs']['getSchemeRollingReturns'] = function() {
     $('#rr-chart-intro').attr('hidden', true);

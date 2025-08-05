@@ -1,6 +1,6 @@
 {% if scheme['id'] is defined %}
     {% set schemeId = scheme['id'] %}
-    {% set title = 'Scheme (' ~ scheme['name'] ~ ')' %}
+    {% set title = 'Scheme (' ~ escaper.html(scheme['name']) ~ ')' %}
     {{adminltetags.useTag('content',
         [
             'component'                     : component,

@@ -1,4 +1,153 @@
-{% set compare = false %}
+<!-- htmlmin:ignore -->
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'navs_start_date',
+                'fieldLabel'                     : 'Navs Start Date',
+                'fieldType'                      : 'html',
+                'fieldAdditionalClass'           : 'mb-0',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Navs Start Date',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldHtmlContent'               : scheme['start_date']
+            ]
+        )}}
+    </div>
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'navs_end_date',
+                'fieldLabel'                     : 'Navs End Date',
+                'fieldType'                      : 'html',
+                'fieldAdditionalClass'           : 'mb-0',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Navs End Date',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldHtmlContent'               : scheme['navs_last_updated']
+            ]
+        )}}
+    </div>
+    {% for cagr in
+        ['day_cagr',
+        'year_cagr',
+        'two_year_cagr',
+        'three_year_cagr',
+        'five_year_cagr',
+        'seven_year_cagr',
+        'ten_year_cagr',
+        'fifteen_year_cagr']
+    %}
+        {% if scheme[cagr] is defined and scheme[cagr] != 0 %}
+            {% set cagrTextColor = 'danger' %}
+            {% if scheme[cagr] > 0 %}
+                {% if scheme[cagr] < 8 %}
+                    {% set cagrTextColor = 'secondary' %}
+                {% elseif scheme[cagr] >= 8 and scheme[cagr] < 15 %}
+                    {% set cagrTextColor = 'info' %}
+                {% elseif scheme[cagr] >= 15 and scheme[cagr] < 20 %}
+                    {% set cagrTextColor = 'success' %}
+                {% elseif scheme[cagr] >= 20 and scheme[cagr] < 25 %}
+                    {% set cagrTextColor = 'warning' %}
+                {% elseif scheme[cagr] >= 25 %}
+                    {% set cagrTextColor = 'fuchsia' %}
+                {% endif %}
+            {% endif %}
+            <div class="col">
+                {{adminltetags.useTag('fields',
+                    [
+                        'component'                      : component,
+                        'componentName'                  : componentName,
+                        'componentId'                    : componentId,
+                        'sectionId'                      : sectionId,
+                        'fieldId'                        : cagr,
+                        'fieldLabel'                     : str_replace('_', ' ', cagr),
+                        'fieldType'                      : 'html',
+                        'fieldAdditionalClass'           : 'mb-0',
+                        'fieldHelp'                      : true,
+                        'fieldHelpTooltipContent'        : str_replace('_', ' ', cagr) ~ ' till ' ~ scheme['navs_last_updated'],
+                        'fieldRequired'                  : false,
+                        'fieldBazScan'                   : false,
+                        'fieldHtmlContent'               : '<span class="text-' ~ cagrTextColor ~ '">' ~ scheme[cagr] ~ '</span>'
+                    ]
+                )}}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+<hr>
+<div class="row">
+    {% for rr in
+        ['year_rr',
+        'two_year_rr',
+        'three_year_rr',
+        'five_year_rr',
+        'seven_year_rr',
+        'ten_year_rr',
+        'fifteen_year_rr']
+    %}
+        {% if scheme[rr] is defined and scheme[rr] != 0 %}
+            {% set rrTextColor = 'danger' %}
+            {% if scheme[rr] > 0 %}
+                {% if scheme[rr] < 8 %}
+                    {% set rrTextColor = 'secondary' %}
+                {% elseif scheme[rr] >= 8 and scheme[rr] < 15 %}
+                    {% set rrTextColor = 'info' %}
+                {% elseif scheme[rr] >= 15 and scheme[rr] < 20 %}
+                    {% set rrTextColor = 'success' %}
+                {% elseif scheme[rr] >= 20 and scheme[rr] < 25 %}
+                    {% set rrTextColor = 'warning' %}
+                {% elseif scheme[rr] >= 25 %}
+                    {% set rrTextColor = 'fuchsia' %}
+                {% endif %}
+            {% endif %}
+            <div class="col">
+                {{adminltetags.useTag('fields',
+                    [
+                        'component'                      : component,
+                        'componentName'                  : componentName,
+                        'componentId'                    : componentId,
+                        'sectionId'                      : sectionId,
+                        'fieldId'                        : rr,
+                        'fieldLabel'                     : str_replace('_', ' ', rr),
+                        'fieldType'                      : 'html',
+                        'fieldAdditionalClass'           : 'mb-0',
+                        'fieldHelp'                      : true,
+                        'fieldHelpTooltipContent'        : str_replace('_', ' ', rr),
+                        'fieldRequired'                  : false,
+                        'fieldBazScan'                   : false,
+                        'fieldHtmlContent'               : '<span class="text-' ~ rrTextColor ~ '">' ~ scheme[rr] ~ '</span>'
+                    ]
+                )}}
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+<div class="row">
+    <div class="col">
+        <small>
+            <span class="text-primary">Text Colors: </span>
+            <span class="text-danger">< 0%</span>,
+            <span class="text-secondary">0-8%</span>,
+            <span class="text-info">8-15%</span>,
+            <span class="text-success">15-20%</span>,
+            <span class="text-warning">> 20%</span>
+        </small>
+    </div>
+</div>
+<hr>
 <div class="row">
     <div class="col">
         {{adminltetags.useTag('tabs',
@@ -26,6 +175,4 @@
         )}}
     </div>
 </div>
-<script>
-
-</script>
+<!-- htmlmin:ignore -->

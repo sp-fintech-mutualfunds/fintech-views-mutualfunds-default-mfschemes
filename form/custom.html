@@ -1,0 +1,354 @@
+{% if schemeCustomChunks %}
+    {% set customTimelineButtons = [] %}
+    {% if schemeCustomChunks is defined %}
+        {% if schemeCustomChunks['week'] is defined and schemeCustomChunks['week']|length > 0 %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'week' : [
+                        'title'                   : '1W',
+                        'type'                    : 'primary',
+                        'value'                   : 'week',
+                        'disabled'                : true
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['month'] is defined and schemeCustomChunks['month']|length > 0 %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'month' : [
+                        'title'                   : '1M',
+                        'type'                    : 'primary',
+                        'value'                   : 'month'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['threeMonth'] is defined and schemeCustomChunks['threeMonth']|length > 0 %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'threeMonth' : [
+                        'title'                   : '3M',
+                        'type'                    : 'primary',
+                        'value'                   : 'threeMonth'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['sixMonth'] is defined and schemeCustomChunks['sixMonth']|length > 0 %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'sixMonth' : [
+                        'title'                   : '6M',
+                        'type'                    : 'primary',
+                        'value'                   : 'sixMonth'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['year'] is defined and schemeCustomChunks['year']|length > 0 %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'year' : [
+                        'title'                   : '1Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'year'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['threeYear'] is defined and schemeCustomChunks['threeYear'] == true %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'threeYear' : [
+                        'title'                   : '3Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'threeYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['fiveYear'] is defined and schemeCustomChunks['fiveYear'] == true %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'fiveYear' : [
+                        'title'                   : '5Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'fiveYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['tenYear'] is defined and schemeCustomChunks['tenYear'] == true %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'tenYear' : [
+                        'title'                   : '10Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'tenYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['twentyYear'] is defined and schemeCustomChunks['twentyYear'] == true %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'twentyYear' : [
+                        'title'                   : '20Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'twentyYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeCustomChunks['thirtyYear'] is defined and schemeCustomChunks['thirtyYear'] == true %}
+            {% set customTimelineButtons = array_merge(customTimelineButtons,
+                [
+                    'thirtyYear' : [
+                        'title'                   : '30Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'thirtyYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% set customTimelineButtons = array_merge(customTimelineButtons,
+            [
+                'all' : [
+                    'title'                   : 'ALL',
+                    'type'                    : 'primary',
+                    'value'                   : 'all'
+                ],
+                'range' : [
+                    'title'                   : 'RANGE',
+                    'type'                    : 'primary',
+                    'value'                   : 'range'
+                ]
+            ]
+        ) %}
+    {% endif %}
+    <div class="row">
+        <div id="custom-timeline-buttons" class="col" hidden>
+            {{adminltetags.useTag('buttons',
+                [
+                    'component'                         : component,
+                    'componentName'                     : componentName,
+                    'componentId'                       : componentId,
+                    'sectionId'                         : sectionId,
+                    'buttonType'                        : 'ButtonGroup',
+                    'buttonId'                          : 'timeline',
+                    'groupButtonType'                   : 'radio',
+                    'groupRadioButtonChecked'           : 'week',
+                    'buttons'                           : customTimelineButtons
+                ]
+            )}}
+        </div>
+        <div class="col">
+            {{adminltetags.useTag('fields',
+                [
+                    'component'                      : component,
+                    'componentName'                  : componentName,
+                    'componentId'                    : componentId,
+                    'sectionId'                      : sectionId,
+                    'fieldId'                        : 'custom_date_range',
+                    'fieldLabel'                     : false,
+                    'fieldPlaceholder'               : 'Date Range',
+                    'fieldType'                      : 'flatpickr',
+                    'fieldFlatpickrClearButton'      : true,
+                    'fieldHelp'                      : true,
+                    'fieldHelpTooltipContent'        : 'Custom Navs Date Range',
+                    'fieldRequired'                  : true,
+                    'fieldHidden'                    : true,
+                    'fieldBazScan'                   : true,
+                    'fieldBazPostOnCreate'           : false,
+                    'fieldBazPostOnUpdate'           : true,
+                    'fieldValue'                     : ''
+                ]
+            )}}
+        </div>
+        <div id="custom-datatype-buttons" class="col text-center" hidden>
+            {{adminltetags.useTag('buttons',
+                [
+                    'component'                         : component,
+                    'componentName'                     : componentName,
+                    'componentId'                       : componentId,
+                    'sectionId'                         : sectionId,
+                    'buttonType'                        : 'ButtonGroup',
+                    'buttonId'                          : 'datatype',
+                    'groupButtonType'                   : 'radio',
+                    'groupRadioButtonChecked'           : 'nav',
+                    'buttons'                           :
+                    [
+                        'nav' : [
+                            'title'                   : 'NAVS',
+                            'type'                    : 'primary',
+                            'value'                   : 'nav'
+                        ],
+                        'diff' : [
+                            'title'                   : 'DIFF',
+                            'type'                    : 'primary',
+                            'value'                   : 'diff'
+                        ],
+                        'diff_percent' : [
+                            'title'                   : 'PERCENT',
+                            'type'                    : 'primary',
+                            'value'                   : 'diff_percent'
+                        ]
+                    ]
+                ]
+            )}}
+        </div>
+    </div>
+    {% set customChunks = escaper.js(json_encode(schemeCustomChunks, 16)) %}
+{% endif %}
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                         : component,
+                'componentName'                     : componentName,
+                'componentId'                       : componentId,
+                'sectionId'                         : sectionId,
+                'fieldId'                           : 'custom_source',
+                'fieldLabel'                        : 'Custom Source',
+                'fieldType'                         : 'select2',
+                'fieldHelp'                         : false,
+                'fieldHelpTooltipContent'           : 'Select custom data source.',
+                'fieldRequired'                     : true,
+                'fieldBazScan'                      : true,
+                'fieldBazPostOnCreate'              : false,
+                'fieldBazPostOnUpdate'              : false,
+                'fieldDataSelect2Options'           :
+                    [
+                        'scheme'                            : [
+                            'id'                            : 'scheme',
+                            'name'                          : 'EXTRACT FROM SCHEME'
+                        ],
+                        'fixed_linear'                      : [
+                            'id'                            : 'fixed_linear',
+                            'name'                          : 'FIXED (LINEAR)'
+                        ],
+                        'fixed_random'                      : [
+                            'id'                            : 'fixed_random',
+                            'name'                          : 'FIXED (RANDOM)'
+                        ]
+                    ],
+                'fieldDataSelect2OptionsKey'        : 'id',
+                'fieldDataSelect2OptionsValue'      : 'name',
+                'fieldDataSelect2OptionsArray'      : true,
+                'fieldDataSelect2OptionsSelected'   : 'scheme'
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    {% include 'schemes/form/generator/currentscheme.html' %}
+    {% include 'schemes/form/generator/fixedlinear.html' %}
+    {% include 'schemes/form/generator/fixedrandom.html' %}
+</div>
+<hr>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('buttons',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'buttonType'                    : 'button',
+                'buttons'                       :
+                    [
+                        'generate-custom'        : [
+                            'title'                   : 'generate custom navs %',
+                            'type'                    : 'success',
+                            'position'                : 'right'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'custom',
+                'fieldLabel'                     : 'Custom Navs (%)',
+                'fieldType'                      : 'textarea',
+                'fieldDataMaxLength'             : 4096,
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Generate custom navs using generator tool or enter custom data in percentages, comma separated.. Example: {"01-01-2020":"0.2"}',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazJstreeSearch'           : true,
+                'fieldBazPostOnCreate'           : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldDataInputMaxLength'        : 16384,
+                'fieldTextareaRows'              : 4,
+                'fieldValue'                     : ''
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('buttons',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'buttonType'                    : 'button',
+                'buttons'                       :
+                    [
+                        'generate-custom-chart'      : [
+                            'title'                   : 'generate custom chart',
+                            'position'                : 'right'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'custom_chart',
+                'fieldLabel'                     : 'Custom Navs Chart',
+                'fieldType'                      : 'html',
+                'fieldAdditionalClass'           : 'mb-0',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Visual representation of the custom navs',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldHtmlContent'               :
+                    '
+                        <div class="row" id="custom-chart-info">
+                            <div class="col">
+                                Generate custom chart to show chart
+                            </div>
+                        </div>
+                        <div class="row" id="custom-chart" hidden>
+                            <div class="col">
+                                <div id="customChart"></div>
+                            </div>
+                        </div>
+                        <div class="row text-center" id="custom-loader" hidden>
+                            <div class="col">
+                                <i class="fa fa-cog fa-spin"></i> Loading custom navs chart...
+                            </div>
+                        </div>
+                    '
+            ]
+        )}}
+    </div>
+</div>

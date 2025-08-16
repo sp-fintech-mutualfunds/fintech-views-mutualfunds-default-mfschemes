@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                                 : component,
+                'componentName'                             : componentName,
+                'componentId'                               : componentId,
+                'sectionId'                                 : sectionId,
+                'fieldId'                                   : type ~ '_number_of_days',
+                'fieldLabel'                                : 'Number of days',
+                'fieldType'                                 : 'input',
+                'fieldInputTypeTextFilter'                  : 'positiveInt',
+                'fieldHelp'                                 : true,
+                'fieldHelpTooltipContent'                   : 'Number of days to generate pattern for',
+                'fieldRequired'                             : false,
+                'fieldBazScan'                              : true,
+                'fieldDataInputMaxLength'                   : 3,
+                'fieldDataInputMinNumber'                   : 0,
+                'fieldDataInputMaxNumber'                   : 365,
+                'fieldBazPostOnCreate'                      : true,
+                'fieldBazPostOnUpdate'                      : true,
+                'fieldValue'                                : ''
+            ]
+        )}}
+    </div>
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                                 : component,
+                'componentName'                             : componentName,
+                'componentId'                               : componentId,
+                'sectionId'                                 : sectionId,
+                'fieldId'                                   : type ~ '_total_percent',
+                'fieldLabel'                                : 'Total Percent',
+                'fieldType'                                 : 'input',
+                'fieldInputTypeTextFilter'                  : 'float',
+                'fieldHelp'                                 : true,
+                'fieldHelpTooltipContent'                   : 'Total percentage value to reach on the last date',
+                'fieldRequired'                             : false,
+                'fieldBazScan'                              : true,
+                'fieldDataInputMaxLength'                   : 5,
+                'fieldDataInputMaxNumber'                   : 1000,
+                'fieldBazPostOnCreate'                      : true,
+                'fieldBazPostOnUpdate'                      : true,
+                'fieldValue'                                : ''
+            ]
+        )}}
+    </div>
+</div>

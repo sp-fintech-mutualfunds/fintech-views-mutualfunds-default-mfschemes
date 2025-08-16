@@ -152,7 +152,6 @@ if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
         dataCollectionSection['{{componentId}}-{{sectionId}}-form'];
 }
 
-
 dataCollectionSectionForm['vars']['categorySchemes'] = { };
 dataCollectionSectionForm['vars']['compareSchemes'] = { };
 dataCollectionSectionForm['vars']['compareSchemesParams'] = { };
@@ -226,6 +225,9 @@ dataCollectionSectionForm['funcs']['getSchemeData'] = function(id) {
     var postData = { };
     postData[$('#security-token').attr('name')] = $('#security-token').val();
     postData['scheme_id'] = id;
+    postData['navs_chunks'] = true;
+    postData['trend'] = true;
+    postData['rolling_returns'] = true;
 
     $.post('{{links.url("mf/schemes/getProcessedSchemeData")}}', postData, function(response) {
         if (response.tokenKey && response.token) {
@@ -235,6 +237,7 @@ dataCollectionSectionForm['funcs']['getSchemeData'] = function(id) {
 
         if (response.responseCode === 0) {
             if (response.responseData.navs_chunks &&
+                response.responseData.trend &&
                 response.responseData.rolling_returns &&
                 response.responseData.rolling_periods
             ) {
@@ -316,6 +319,10 @@ dataCollectionSectionForm['funcs']['processCompareData'] = function() {
     }
 
     if (Object.keys(dataCollectionSectionForm['vars']['compareSchemes']).length === 0) {
+        $('#{{componentId}}-{{sectionId}}-rolling_period').val(0).trigger('change');
+        $('#rr-chart').attr('hidden', true);
+        $('#{{componentId}}-{{sectionId}}-statistics-table tbody').html('');
+
         return;
     }
 
@@ -357,8 +364,6 @@ dataCollectionSectionForm['funcs']['processCompareData'] = function() {
             }
         }
     }
-    //eslint-disable-next-line
-    console.log(dataCollectionSectionForm['vars']['compareSchemesParams']);
 
     for (var availableChunk in dataCollectionSectionForm['vars']['compareSchemesParams']['chunks']) {
         if (dataCollectionSectionForm['vars']['compareSchemesParams']['chunks'][availableChunk] === false) {
@@ -382,10 +387,25 @@ dataCollectionSectionForm['funcs']['processCompareData'] = function() {
             false
         );
 
-        $('#{{componentId}}-{{sectionId}}-rolling_period').append(newOption).val('year').trigger('change');
+        $('#{{componentId}}-{{sectionId}}-rolling_period').append(newOption).trigger('change');
     }
 
+    if (dataCollectionSectionForm['vars']['rr_period'] !== '') {
+        if (dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_periods'][dataCollectionSectionForm['vars']['rr_period']]) {
+            $('#{{componentId}}-{{sectionId}}-rolling_period').val(dataCollectionSectionForm['vars']['rr_period']).trigger('change');
+        } else {
+            $('#{{componentId}}-{{sectionId}}-rolling_period').val(0).trigger('change');
+            $('#rr-chart').attr('hidden', true);
+            $('#{{componentId}}-{{sectionId}}-statistics-table tbody').html('');
+        }
+    } else {
+        $('#{{componentId}}-{{sectionId}}-rolling_period').val(0).trigger('change');
+    }
+
+    dataCollectionSectionForm['vars']['rrChunks'] = { };
+
     dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr'].setDate(dataCollectionSectionForm['vars']['compareSchemesParams']['start_date']);
+    dataCollectionSectionForm['vars']['rr_start_date'] = dataCollectionSectionForm['vars']['compareSchemesParams']['start_date'];
     dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate =
         dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr']['config']['minDate'] =
             dataCollectionSectionForm['vars']['compareSchemesParams']['start_date'];
@@ -395,6 +415,14 @@ dataCollectionSectionForm['funcs']['processCompareData'] = function() {
         dayjs(dataCollectionSectionForm['vars']['compareSchemesParams']['end_date']).subtract(1, 'year').format('YYYY-MM-DD');
 
     dataCollectionSectionForm['funcs']['initNavChart'](true);
+
+    if (dataCollectionSectionForm['vars']['rr_period'] !== '' &&
+        dataCollectionSectionForm['vars']['rr_start_date'] !== ''
+    ) {
+        $.each(dataCollectionSectionForm['vars']['compareSchemes'], function(schemeId, scheme) {
+            dataCollectionSectionForm['funcs']['getSchemeRollingReturns'](schemeId);
+        });
+    }
 }
 
 dataCollectionSection =
@@ -474,7 +502,7 @@ dataCollectionSection =
                     postData['get_all_navs'] = true;
                     postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
 
-                    $.post('{{links.url("mf/extractdata/getAllNavData")}}', postData, function(response) {
+                    $.post('{{links.url("mf/tools/extractdata/getAllNavData")}}', postData, function(response) {
                         $(thisButton).removeClass('disabled');
                         $(thisButton).children('i').attr('hidden', true);
 
@@ -534,7 +562,15 @@ dataCollectionSection =
                     dataCollectionSectionForm['vars']['rr_period'] = e.params.data.id;
 
                     if (dataCollectionSectionForm['vars']['rr_start_date'] !== '') {
-                        dataCollectionSectionForm['funcs']['getSchemeRollingReturns']();
+                        // var compareSchemesKeys = Object.keys(dataCollectionSectionForm['vars']['compareSchemes']);
+
+                        // var lastSchemeId = compareSchemesKeys[compareSchemesKeys.length - 1];
+                        $.each(dataCollectionSectionForm['vars']['compareSchemes'], function(schemeId, scheme) {
+                            // if (compareSchemesKeys.length === 1) {
+                            //     lastSchemeId = schemeId;
+                            // }
+                            dataCollectionSectionForm['funcs']['getSchemeRollingReturns'](schemeId);
+                        });
                     }
                 });
             }
@@ -551,16 +587,17 @@ dataCollectionSection =
                     dataCollectionSectionForm['vars']['rr_start_date'] = dateStr;
 
                     if (dataCollectionSectionForm['vars']['rr_period'] && dataCollectionSectionForm['vars']['rr_period'] != '0') {
-                        dataCollectionSectionForm['funcs']['getSchemeRollingReturns']();
+                        // var compareSchemesKeys = Object.keys(dataCollectionSectionForm['vars']['compareSchemes']);
+
+                        // var lastSchemeId = compareSchemesKeys[compareSchemesKeys.length - 1];
+                        $.each(dataCollectionSectionForm['vars']['compareSchemes'], function(schemeId, scheme) {
+                            // if (compareSchemesKeys.length === 1) {
+                            //     lastSchemeId = schemeId;
+                            // }
+                            dataCollectionSectionForm['funcs']['getSchemeRollingReturns'](schemeId);
+                        });
                     }
                 }
-            },
-            afterInit : function() {
-                // dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr']['config']['maxDate'] =
-                //     dayjs(dataCollectionSectionForm['vars']['scheme']['navs_last_updated']).subtract(1, 'year').format('YYYY-MM-DD');
-
-                // dataCollectionSection['{{componentId}}-{{sectionId}}-start_date']['flatpickr'].setDate(dataCollectionSectionForm['vars']['scheme']['start_date']);
-                // dataCollectionSectionForm['vars']['rr_start_date'] = dataCollectionSectionForm['vars']['scheme']['start_date'];
             }
         },
         '{{componentId}}-{{sectionId}}-form'                        : {

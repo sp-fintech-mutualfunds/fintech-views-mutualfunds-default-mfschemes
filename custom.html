@@ -1,0 +1,80 @@
+{% if scheme['custom'] is defined and is_array(scheme['custom']) %}
+    {% set schemeCustom = scheme['custom'] %}
+{% else %}
+    {% set schemeCustom = [] %}
+{% endif %}
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'navs_start_date',
+                'fieldLabel'                     : 'Custom Navs Start Date',
+                'fieldType'                      : 'html',
+                'fieldAdditionalClass'           : 'mb-0',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Custom Navs Start Date',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldHtmlContent'               : customNavStartDate
+            ]
+        )}}
+    </div>
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'navs_end_date',
+                'fieldLabel'                     : 'Custom Navs End Date',
+                'fieldType'                      : 'html',
+                'fieldAdditionalClass'           : 'mb-0',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Custom Navs End Date',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldHtmlContent'               : customNavEndDate
+            ]
+        )}}
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('tabs',
+            [
+                'component'                     : component,
+                'componentName'                 : componentName,
+                'componentId'                   : componentId,
+                'sectionId'                     : 'main',
+                'tabsId'                        : 'tabs',
+                'tabsStyle'                     : 'card-outline-tabs',
+                'tabsData'                      :
+                    [
+                        'navs'   :
+                        [
+                            'tabTitle'          : 'Navs',
+                            'tabInclude'        : 'schemes/form/navs'
+                        ],
+                        'rr'   :
+                        [
+                            'tabTitle'          : 'Rolling Returns',
+                            'tabInclude'        : 'schemes/form/rr'
+                        ],
+                        'generator'   :
+                        [
+                            'tabTitle'          : 'Custom Navs Generator',
+                            'tabInclude'        : 'schemes/generator'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>

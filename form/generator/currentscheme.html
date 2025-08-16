@@ -1,0 +1,108 @@
+<div class="col sources" id="{{componentId}}-{{sectionId}}-current_scheme" hidden>
+    <div class="row sources" id="timeline" hidden>
+        <div class="col">
+            {{adminltetags.useTag('buttons',
+                [
+                    'component'                         : component,
+                    'componentName'                     : componentName,
+                    'componentId'                       : componentId,
+                    'sectionId'                         : sectionId,
+                    'buttonType'                        : 'ButtonGroup',
+                    'buttonId'                          : 'custom_timeline',
+                    'groupButtonType'                   : 'radio',
+                    'groupRadioButtonChecked'           : 'week',
+                    'buttons'                           :
+                        [
+                            'week' : [
+                                'title'                   : '1W',
+                                'type'                    : 'primary',
+                                'value'                   : 'week',
+                                'disabled'                : true
+                            ],
+                            'month' : [
+                                'title'                   : '1M',
+                                'type'                    : 'primary',
+                                'value'                   : 'month'
+                            ],
+                            'threeMonth' : [
+                                'title'                   : '3M',
+                                'type'                    : 'primary',
+                                'value'                   : 'threeMonth'
+                            ],
+                            'sixMonth' : [
+                                'title'                   : '6M',
+                                'type'                    : 'primary',
+                                'value'                   : 'sixMonth'
+                            ],
+                            'year' : [
+                                'title'                   : '1Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'year'
+                            ],
+                            'threeYear' : [
+                                'title'                   : '3Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'threeYear'
+                            ],
+                            'fiveYear' : [
+                                'title'                   : '5Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'fiveYear'
+                            ],
+                            'tenYear' : [
+                                'title'                   : '10Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'tenYear'
+                            ],
+                            'all' : [
+                                'title'                   : 'ALL',
+                                'type'                    : 'primary',
+                                'value'                   : 'all'
+                            ],
+                            'range' : [
+                                'title'                   : 'RANGE',
+                                'type'                    : 'primary',
+                                'value'                   : 'range'
+                            ]
+                        ]
+                ]
+            )}}
+        </div>
+        <div class="col">
+            {{adminltetags.useTag('fields',
+                [
+                    'component'                      : component,
+                    'componentName'                  : componentName,
+                    'componentId'                    : componentId,
+                    'sectionId'                      : sectionId,
+                    'fieldId'                        : 'custom_date_range',
+                    'fieldLabel'                     : false,
+                    'fieldPlaceholder'               : 'Date Range',
+                    'fieldType'                      : 'flatpickr',
+                    'fieldFlatpickrClearButton'      : true,
+                    'fieldHelp'                      : true,
+                    'fieldHelpTooltipContent'        : 'Navs Date Range',
+                    'fieldRequired'                  : true,
+                    'fieldHidden'                    : true,
+                    'fieldBazScan'                   : true,
+                    'fieldBazPostOnCreate'           : false,
+                    'fieldBazPostOnUpdate'           : true,
+                    'fieldValue'                     : ''
+                ]
+            )}}
+        </div>
+    </div>
+    <br>
+    {% set navsChunks = json_encode([], 16) %}
+    {% set scheme = json_encode([], 16) %}
+    <div class="row sources" id="custom-timeline-chart" hidden>
+        <div class="col">
+            <div id="customChart"></div>
+        </div>
+    </div>
+    <div class="row sources text-center" id="custom-timeline-loader" hidden>
+        <div class="col">
+            <i class="fa fa-cog fa-spin"></i> Loading custom navs chart...
+        </div>
+    </div>
+</div>

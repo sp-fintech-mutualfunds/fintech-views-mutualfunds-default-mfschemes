@@ -55,6 +55,26 @@
                                 'type'                    : 'primary',
                                 'value'                   : 'tenYear'
                             ],
+                            'fifteenYear' : [
+                                'title'                   : '15Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'fifteenYear'
+                            ],
+                            'twentyYear' : [
+                                'title'                   : '20Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'twentyYear'
+                            ],
+                            'twentyFiveYear' : [
+                                'title'                   : '25Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'twentyFiveYear'
+                            ],
+                            'thirtyYear' : [
+                                'title'                   : '30Y',
+                                'type'                    : 'primary',
+                                'value'                   : 'thirtyYear'
+                            ],
                             'all' : [
                                 'title'                   : 'ALL',
                                 'type'                    : 'primary',
@@ -188,6 +208,50 @@
                 ]
             ) %}
         {% endif %}
+        {% if schemeNavChunks['fifteenYear'] is defined and schemeNavChunks['fifteenYear'] == true %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'fifteenYear' : [
+                        'title'                   : '15Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'fifteenYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['twentyYear'] is defined and schemeNavChunks['twentyYear'] == true %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'twentyYear' : [
+                        'title'                   : '20Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'twentyYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['twentyFiveYear'] is defined and schemeNavChunks['twentyFiveYear'] == true %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'twentyFiveYear' : [
+                        'title'                   : '25Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'twentyFiveYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
+        {% if schemeNavChunks['thirtyYear'] is defined and schemeNavChunks['thirtyYear'] == true %}
+            {% set timelineButtons = array_merge(timelineButtons,
+                [
+                    'thirtyYear' : [
+                        'title'                   : '30Y',
+                        'type'                    : 'primary',
+                        'value'                   : 'thirtyYear'
+                    ]
+                ]
+            ) %}
+        {% endif %}
         {% set timelineButtons = array_merge(timelineButtons,
             [
                 'all' : [
@@ -274,26 +338,28 @@
                 ]
             )}}
         </div>
-        <div class="col">
-            {{adminltetags.useTag('buttons',
-                [
-                    'componentId'           : componentId,
-                    'sectionId'             : sectionId,
-                    'buttonType'            : 'button',
-                    'buttons'               :
-                        [
-                            'import' : [
-                                'title'                   : 'Import Navs',
-                                'position'                : 'right',
-                                'size'                    : 'sm',
-                                'icon'                    : 'cog fa-spin',
-                                'iconHidden'              : true,
-                                'url'                     : links.url('mf/schemes/q/id/' ~ scheme['id'])
+        {% if custom is not defined %}
+            <div class="col">
+                {{adminltetags.useTag('buttons',
+                    [
+                        'componentId'           : componentId,
+                        'sectionId'             : sectionId,
+                        'buttonType'            : 'button',
+                        'buttons'               :
+                            [
+                                'import' : [
+                                    'title'                   : 'Import Navs',
+                                    'position'                : 'right',
+                                    'size'                    : 'sm',
+                                    'icon'                    : 'cog fa-spin',
+                                    'iconHidden'              : true,
+                                    'url'                     : links.url('mf/schemes/q/id/' ~ scheme['id'])
+                                ]
                             ]
-                        ]
-                ]
-            )}}
-        </div>
+                    ]
+                )}}
+            </div>
+        {% endif %}
     </div>
     {% set navsChunks = escaper.js(json_encode(schemeNavChunks, 16)) %}
     {% set scheme = escaper.js(json_encode(scheme, 16)) %}
@@ -326,7 +392,6 @@
             <i class="fa fa-cog fa-spin"></i> Importing all available NAV data...
         </div>
     </div>
-    {% set compare = false %}
     {% set categories = json_encode([], 16) %}
 {% endif %}
 <div class="row" id="timeline-chart" hidden>
@@ -336,11 +401,11 @@
 </div>
 <div class="row text-center" id="timeline-loader">
     <div class="col">
-        <i class="fa fa-cog fa-spin"></i> Loading chart...
+        <i class="fa fa-cog fa-spin"></i> Loading navs chart and table...
     </div>
 </div>
 <hr>
-{% set trendHeaders = [] %}
+{% set trendsHeaders = [] %}
 {% set trendsHtml =
     '<div class="row">' ~
     '    <div class="col">' ~
@@ -350,7 +415,7 @@
 {% if compare is defined and compare == true %}
     {% set trendsHtml = trendsHtml ~
     '                    <th id="trend-days" class="text-uppercase text-center"></th>' %}
-    {% set trendHeaders = array_merge(trendHeaders, ['Scheme']) %}
+    {% set trendsHeaders = array_merge(trendsHeaders, ['Scheme']) %}
 {% endif %}
     {% set trendsHtml = trendsHtml ~
     '                    <th id="trend-days" class="text-uppercase text-center" colspan="3">Trend Days</th>' ~
@@ -358,7 +423,7 @@
     '                </tr>' ~
     '                <tr>'
 %}
-{% set trendHeaders = array_merge(trendHeaders,
+{% set trendsHeaders = array_merge(trendsHeaders,
     ['up days',
     'down days',
     'neutral days',
@@ -376,7 +441,7 @@
     '4-5%',
     '> 5%'])
 %}
-{% for trend in trendHeaders %}
+{% for trend in trendsHeaders %}
     {% set trendsHtml = trendsHtml ~ '<th class="text-uppercase">' ~ trend ~ '</th>' %}
 {% endfor %}
 {% set trendsHtml = trendsHtml ~
@@ -458,35 +523,17 @@ if (dataCollectionSectionForm['vars']['compare'] == true) {
     dataCollectionSectionForm['vars']['scheme'] = JSON.parse('{{scheme}}');
     dataCollectionSectionForm['vars']['navs_chunks'][dataCollectionSectionForm['vars']['scheme']['id']] = JSON.parse('{{navsChunks}}');
     dataCollectionSectionForm['vars']['trend'][dataCollectionSectionForm['vars']['scheme']['id']] = dataCollectionSectionForm['vars']['scheme']['trend'];
+    dataCollectionSectionForm['vars']['custom'] = dataCollectionSectionForm['vars']['scheme']['custom'];
+    dataCollectionSectionForm['vars']['schemeNavs'] = { };
+    dataCollectionSectionForm['vars']['schemeNavsPercent'] = [];
+    dataCollectionSectionForm['vars']['custom_index'] = [];
+    dataCollectionSectionForm['vars']['pattern_id'] = 0;
+    dataCollectionSectionForm['vars']['customNavStartDate'] = '{{customNavStartDate}}'
+    dataCollectionSectionForm['vars']['customNavEndDate'] = '{{customNavEndDate}}'
 }
 
 dataCollectionSectionForm['vars']['actions'] = { };
 dataCollectionSectionForm['vars']['navsChart'] = { };
-
-// dataCollectionSectionForm['vars']['initData'] = [];
-// dataCollectionSectionForm['vars']['initNavData'] = { };
-// dataCollectionSectionForm['vars']['weekData'] = [];
-// dataCollectionSectionForm['vars']['weekNavData'] = { };
-// dataCollectionSectionForm['vars']['monthData'] = [];
-// dataCollectionSectionForm['vars']['monthNavData'] = { };
-// dataCollectionSectionForm['vars']['threeMonthData'] = [];
-// dataCollectionSectionForm['vars']['threeMonthNavData'] = { };
-// dataCollectionSectionForm['vars']['sixMonthData'] = [];
-// dataCollectionSectionForm['vars']['sixMonthNavData'] = { };
-// dataCollectionSectionForm['vars']['yearData'] = [];
-// dataCollectionSectionForm['vars']['yearNavData'] = { };
-// dataCollectionSectionForm['vars']['threeYearData'] = [];
-// dataCollectionSectionForm['vars']['threeYearNavData'] = { };
-// dataCollectionSectionForm['vars']['fiveYearData'] = [];
-// dataCollectionSectionForm['vars']['fiveYearNavData'] = { };
-// dataCollectionSectionForm['vars']['tenYearData'] = [];
-// dataCollectionSectionForm['vars']['tenYearNavData'] = { };
-// dataCollectionSectionForm['vars']['allData'] = [];
-// dataCollectionSectionForm['vars']['allNavData'] = { };
-// dataCollectionSectionForm['vars']['rangeActive'] = false;
-// dataCollectionSectionForm['vars']['range'] = null;
-// dataCollectionSectionForm['vars']['rangeData'] = [];
-// dataCollectionSectionForm['vars']['rangeNavData'] = { };
 
 dataCollectionSectionForm['vars']['timeline'] = 'week';
 
@@ -498,7 +545,8 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
     if (compare === true) {
         dataCollectionSectionForm['vars']['navsChartOptions'] = {
             title: {
-                text: 'Growth comparison (%)'
+                text: 'Growth comparison (%)',
+                left: 'left'
             },
             tooltip: {
                 trigger: 'axis',
@@ -506,7 +554,13 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
                   type: 'cross'
                 }
             },
-            legend: {},
+            legend: {
+                top: 50,
+                center: 'center'
+            },
+            grid: {
+                top: 80,
+            },
             xAxis: {
                 name: 'PERIOD (WEEK)',
                 nameLocation: 'middle',
@@ -533,7 +587,8 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
     } else {
         dataCollectionSectionForm['vars']['navsChartOptions'] = {
             title: {
-                text: 'NAVs for ' + dataCollectionSectionForm['vars']['scheme']['name']
+                text: 'NAVs for ' + dataCollectionSectionForm['vars']['scheme']['name'],
+                left: 'left'
             },
             tooltip: {
                 trigger: 'axis',
@@ -541,7 +596,13 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
                   type: 'cross'
                 }
             },
-            legend: {},
+            legend: {
+                top: 50,
+                center: 'center'
+            },
+            grid: {
+                top: 80,
+            },
             xAxis: {
                 name: 'PERIOD (WEEK)',
                 nameLocation: 'middle',
@@ -596,13 +657,14 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
 
     if (Object.keys(dataCollectionSectionForm['vars']['navs_chunks']).length > 0) {
         dataCollectionSectionForm['vars']['navsChartOptions']['series'] = [];
-        dataCollectionSectionForm['vars']['navsChart'].setOption({series: []}, {replaceMerge: ['series']})
-
         dataCollectionSectionForm['vars']['timeline'] = 'week';
 
-        $.each(['week', 'month', 'threeMonth', 'sixMonth', 'year', 'threeYear', 'fiveYear', 'tenYear', 'all', 'range'], function(index, time) {
+        $.each(['week', 'month', 'threeMonth', 'sixMonth', 'year', 'threeYear', 'fiveYear', 'tenYear', 'fifteenYear', 'twentyYear', 'twentyFiveYear', 'thirtyYear', 'all', 'range'],
+               function(index, time) {
             if (!dataCollectionSectionForm['vars']['actions'][time]) {
                 dataCollectionSectionForm['vars']['actions'][time] = function() {
+                    dataCollectionSectionForm['vars']['navsChart'].setOption({series: []}, {replaceMerge: ['series']});
+
                     if (time === 'range') {
                         dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD RANGE (' + dataCollectionSectionForm['vars']['range'] + ')';
                     } else {
@@ -611,10 +673,11 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
                     dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
                     dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = [];
 
+                    var counter = 0;
                     $.each(dataCollectionSectionForm['vars']['navs_chunks'], function(schemeId, chunks) {
                         dataCollectionSectionForm['vars'][time + 'Data'] = [];
-                        dataCollectionSectionForm['vars']['navsChartOptions']['series'][schemeId] = { };
-                        dataCollectionSectionForm['vars']['navsChartOptions']['series'][schemeId]['type'] = 'line';
+                        dataCollectionSectionForm['vars']['navsChartOptions']['series'][counter] = { };
+                        dataCollectionSectionForm['vars']['navsChartOptions']['series'][counter]['type'] = 'line';
 
                         for (var date in chunks[time]) {
                             dataCollectionSectionForm['vars'][time + 'NavData'] = { };
@@ -640,12 +703,12 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
                         }
 
                         if (compare) {
-                            dataCollectionSectionForm['vars']['navsChartOptions']['series'][schemeId]['name'] = dataCollectionSectionForm['vars']['compareSchemes'][schemeId]['name'];
+                            dataCollectionSectionForm['vars']['navsChartOptions']['series'][counter]['name'] = dataCollectionSectionForm['vars']['compareSchemes'][schemeId]['name'];
                         } else {
-                            dataCollectionSectionForm['vars']['navsChartOptions']['series'][schemeId]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
+                            dataCollectionSectionForm['vars']['navsChartOptions']['series'][counter]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
                         }
 
-                        dataCollectionSectionForm['vars']['navsChartOptions']['series'][schemeId]['data'] = dataCollectionSectionForm['vars'][time + 'Data'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
+                        dataCollectionSectionForm['vars']['navsChartOptions']['series'][counter]['data'] = dataCollectionSectionForm['vars'][time + 'Data'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
                         if (dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'].length === 0) {
                             dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars'][time + 'Data'].map(row => row.date);
                         }
@@ -653,6 +716,8 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
                         if (compare === true) {
                             dataCollectionSectionForm['vars']['scheme'] = dataCollectionSectionForm['vars']['compareSchemes'][schemeId];
                         }
+
+                        counter++;
                     });
 
                     dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
@@ -663,27 +728,6 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
         });
 
         dataCollectionSectionForm['vars']['actions']['week']();
-
-        // dataCollectionSectionForm['vars']['actions']['range'] = function() {
-        //     dataCollectionSectionForm['vars']['rangeData'] = [];
-
-        //     for (var rangeDate in chunks['range']) {
-        //         dataCollectionSectionForm['vars']['rangeNavData'] = { };
-        //         dataCollectionSectionForm['vars']['rangeNavData']['date'] = rangeDate;
-        //         dataCollectionSectionForm['vars']['rangeNavData'][dataCollectionSectionForm['vars']['dataType']] =
-        //             chunks['range'][rangeDate][dataCollectionSectionForm['vars']['dataType']];
-
-        //         dataCollectionSectionForm['vars']['rangeData'].push(dataCollectionSectionForm['vars']['rangeNavData']);
-        //     }
-
-        //     dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['name'] = 'PERIOD RANGE (' + dataCollectionSectionForm['vars']['range'] + ')'
-        //     dataCollectionSectionForm['vars']['navsChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['rangeData'].map(row => row.date);
-        //     dataCollectionSectionForm['vars']['navsChartOptions']['yAxis']['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
-        //     dataCollectionSectionForm['vars']['navsChartOptions']['series'][schemeId]['name'] = dataCollectionSectionForm['vars']['dataTypeName'];
-        //     dataCollectionSectionForm['vars']['navsChartOptions']['series'][schemeId]['data'] = dataCollectionSectionForm['vars']['rangeData'].map(row => row[dataCollectionSectionForm['vars']['dataType']]);
-        //     // dataCollectionSectionForm['vars']['navsChart'].setOption(dataCollectionSectionForm['vars']['navsChartOptions']);
-        //     dataCollectionSectionForm['funcs']['popluateTrendTable']('range', schemeId);
-        // }
 
         //Activate Timeline buttons
         var timelineChecked = $("input[type='radio'][name='timeline']:checked");
@@ -773,6 +817,34 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
                     }
                 } else if (timelineTimeline === 'tenYear') {
                     if (typeof dataCollectionSectionForm['vars']['navs_chunks'][schemeId]['tenYear'] === 'boolean') {
+                        dataCollectionSectionForm['vars']['scheme']['id'] = schemeId;
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
+                } else if (timelineTimeline === 'fifteenYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks'][schemeId]['fifteenYear'] === 'boolean') {
+                        dataCollectionSectionForm['vars']['scheme']['id'] = schemeId;
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
+                } else if (timelineTimeline === 'twentyYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks'][schemeId]['twentyYear'] === 'boolean') {
+                        dataCollectionSectionForm['vars']['scheme']['id'] = schemeId;
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
+                } else if (timelineTimeline === 'twentyFiveYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks'][schemeId]['twentyFiveYear'] === 'boolean') {
+                        dataCollectionSectionForm['vars']['scheme']['id'] = schemeId;
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
+                } else if (timelineTimeline === 'thirtyYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks'][schemeId]['thirtyYear'] === 'boolean') {
                         dataCollectionSectionForm['vars']['scheme']['id'] = schemeId;
                         dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
                     } else {
@@ -887,6 +959,30 @@ dataCollectionSectionForm['funcs']['initNavChart'] = function(compare = false) {
                     } else {
                         dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
                     }
+                } else if (timelineTimeline === 'fifteenYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks']['fifteenYear'] === 'boolean') {
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
+                } else if (timelineTimeline === 'twentyYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks']['twentyYear'] === 'boolean') {
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
+                } else if (timelineTimeline === 'twentyFiveYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks']['twentyFiveYear'] === 'boolean') {
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
+                } else if (timelineTimeline === 'thirtyYear') {
+                    if (typeof dataCollectionSectionForm['vars']['navs_chunks']['thirtyYear'] === 'boolean') {
+                        dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
+                    } else {
+                        dataCollectionSectionForm['vars']['actions'][timelineTimeline]();
+                    }
                 } else if (timelineTimeline === 'all') {
                     if (typeof dataCollectionSectionForm['vars']['navs_chunks']['all'] === 'boolean') {
                         dataCollectionSectionForm['funcs']['getSchemeNavChunks'](timelineTimeline);
@@ -914,6 +1010,10 @@ dataCollectionSectionForm['funcs']['getSchemeNavChunks'] = function(chunksize, r
     if (dataCollectionSectionForm['vars']['compare'] == true) {
         postData['start_date'] = dataCollectionSectionForm['vars']['compareSchemesParams']['start_date'];
         postData['end_date'] = dataCollectionSectionForm['vars']['compareSchemesParams']['end_date'];
+    }
+
+    if (dataCollectionSectionForm['vars']['custom']) {
+        postData['customChunks'] = true;
     }
 
     $.post('{{links.url("mf/schemes/getSchemeNavChunks")}}', postData, function(response) {
@@ -949,8 +1049,6 @@ dataCollectionSectionForm['funcs']['getSchemeNavChunks'] = function(chunksize, r
 }
 
 dataCollectionSectionForm['funcs']['popluateTrendTable'] = function(trend) {
-    //eslint-disable-next-line
-    console.log(trend);
     $('#trend-days').html('Trend days (' + dataCollectionSectionForm['vars']['trend'][dataCollectionSectionForm['vars']['scheme']['id']][trend]['totalDays'] + ')');
 
     var trendHtml = '';
@@ -1049,12 +1147,6 @@ dataCollectionSectionForm['funcs']['popluateTrendTable'] = function(trend) {
     });
 
     $('#{{componentId}}-{{sectionId}}-trends-table tbody').html(trendHtml);
-    // } else {
-    //     dataCollectionSectionForm['funcs']['getSchemeNavChunks'](trend, null, null, true);
-    //     dataCollectionSectionForm['vars']['scheme']['id'] = schemeId;
-
-        // $('#{{componentId}}-{{sectionId}}-trends-table tbody').html('');
-    // }
 }
 
 dataCollectionSectionForm['funcs']['browse'] = function(url) {

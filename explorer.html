@@ -1,5 +1,25 @@
+<!-- htmlmin:ignore -->
 <div class="row">
-    <div class="col">{{adminltetags.useTag('fields',
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'scheme_timeline',
+                'fieldLabel'                     : 'Timeline Date',
+                'fieldType'                      : 'flatpickr',
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Select date to go to the timeline date.',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazPostOnUpdate'           : false
+            ]
+        )}}
+    </div>
+    <div class="col">
+        {{adminltetags.useTag('fields',
             [
                 'component'                      : component,
                 'componentName'                  : componentName,
@@ -22,7 +42,8 @@
             ]
         )}}
     </div>
-    <div class="col">{{adminltetags.useTag('fields',
+    <div class="col">
+        {{adminltetags.useTag('fields',
             [
                 'component'                      : component,
                 'componentName'                  : componentName,
@@ -101,6 +122,42 @@
         )}}
     </div>
 </div>
+<div class="row">
+    <div class="col">
+        <small>
+            <span class="text-primary">Text Colors: </span>
+            <span class="text-danger">< 0%</span>,
+            <span class="text-secondary">0-8%</span>,
+            <span class="text-info">8-15%</span>,
+            <span class="text-success">15-20%</span>,
+            <span class="text-warning">20-25%</span>,
+            <span class="text-fuchsia">> 25%</span>
+        </small>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('buttons',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'buttonType'                    : 'button',
+                'buttons'                       :
+                    [
+                        'navs-link'    : [
+                            'title'                   : 'link',
+                            'size'                    : 'xs',
+                            'disabled'                : true,
+                            'hidden'                  : true,
+                            'url'                     : '#'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>
 <script>
 /*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection echarts */
 var dataCollectionComponent, dataCollectionSection, dataCollectionSectionForm;
@@ -129,8 +186,45 @@ if (!dataCollectionSection['{{componentId}}-{{sectionId}}-form']) {
         dataCollectionSection['{{componentId}}-{{sectionId}}-form'];
 }
 
+if (!dataCollectionSectionForm['vars']) {
+    dataCollectionSectionForm['vars'] = { };
+}
+
+dataCollectionSectionForm['vars']['today'] = '{{today}}';
+dataCollectionSectionForm['vars']['timeline'] = '{{timeline}}';
+
+if (!dataCollectionSectionForm['funcs']) {
+    dataCollectionSectionForm['funcs'] = { };
+}
+
 dataCollectionSection =
     $.extend(dataCollectionSection, {
+        '{{componentId}}-{{sectionId}}-scheme_timeline'                     : {
+            dateFormat          : "Y-m-d",
+            altFormat           : "d-m-Y",
+            allowInput          : true,
+            static              : true,
+            maxDate             : "today",
+            onChange: function(selectedDates, dateStr, instance) {
+                if (dateStr !== '') {
+                    dateStr = dataCollectionSection['{{componentId}}-{{sectionId}}-scheme_timeline']['flatpickr'].formatDate(instance.parseDate(dateStr), 'd-m-Y');
+
+                    dataCollectionSectionForm['funcs']['browse']('{{links.url("mf/schemes/q/timeline/' + dateStr + '")}}');
+                }
+            },
+            disable: [
+                function(date) {
+                    // return true to disable
+                    return (date.getDay() === 0 || date.getDay() === 6);
+                }
+            ],
+            locale: {
+                "firstDayOfWeek": 1 // start week on Monday
+            },
+            afterInit: function() {
+                dataCollectionSection['{{componentId}}-{{sectionId}}-scheme_timeline']['flatpickr'].setDate(dataCollectionSectionForm['vars']['timeline']);
+            }
+        },
         '{{componentId}}-{{sectionId}}-amc_ids'                             : {
             placeholder: "SELECT AMC(s)",
             afterInit: function() {
@@ -164,15 +258,6 @@ dataCollectionSection =
             }
         }
     });
-
-if (!dataCollectionSectionForm['vars']) {
-    dataCollectionSectionForm['vars'] = { };
-}
-dataCollectionSectionForm['vars']['compare'] = [];
-
-if (!dataCollectionSectionForm['funcs']) {
-    dataCollectionSectionForm['funcs'] = { };
-}
 
 dataCollectionSectionForm['funcs']['query'] = function() {
     var query = '';
@@ -248,9 +333,47 @@ dataCollectionSectionForm['funcs']['query'] = function() {
         });
     }
 
+    if (dataCollectionSectionForm['vars']['today'] !== dataCollectionSectionForm['vars']['timeline']) {
+        query += 'AND|start_date|lessthanequals|' + dataCollectionSectionForm['vars']['timeline'] + '&';
+        //eslint-disable-next-line
+        console.log(query);
+    }
+
     dataCollection['{{componentId}}']['{{componentId}}-{{sectionId}}']['listOptions']['postParams']['conditions'] = query;
 
     dataCollectionSection['BazContentSectionWithListing']
         ._filterRunAjax(1, dataCollection['{{componentId}}']['{{componentId}}-{{sectionId}}']['listOptions']['datatable']['paginationCounters']['limit'], query);
 }
+
+//We need to load flatpicker in the end after datatables. Else it will not load.
+$('body').on('sectionWithListingLoaded', function() {
+    BazContentFields.init({
+        'componentId'   : "{{componentId}}",
+        'sectionId'     : "{{componentId}}-{{sectionId}}",
+        'fieldId'       : "{{componentId}}-{{sectionId}}-scheme_timeline"
+    });
+
+    $('body').off('sectionWithListingLoaded');
+});
+
+dataCollectionSectionForm['funcs']['browse'] = function(url) {
+    $('#{{componentId}}-{{sectionId}}-navs-link').attr('href', url);
+
+    BazContentLoader.loadAjax($('#{{componentId}}-{{sectionId}}-navs-link'), {
+        ajaxBefore                      : function () {
+                                            Pace.restart();
+                                            $("#baz-content").empty();
+                                            $("#loader").attr('hidden', false);
+                                        },
+        ajaxFinished                    : function () {
+                                            BazCore.updateBreadcrumb();
+                                            $("#loader").attr('hidden', true);
+                                        },
+        ajaxError                       : function () {
+                                            $("#loader").attr('hidden', true);
+                                            BazCore.updateBreadcrumb();
+                                        }
+    });
+}
 </script>
+<!-- htmlmin:ignore -->

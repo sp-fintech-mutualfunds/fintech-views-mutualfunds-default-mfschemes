@@ -2,91 +2,7 @@
 {% if compare is defined and compare == true %}
     {% set rollingPeriods = [] %}
 {% else %}
-    <div class="row">
-        <div class="col">
-            {{adminltetags.useTag('fields',
-                [
-                    'component'                      : component,
-                    'componentName'                  : componentName,
-                    'componentId'                    : componentId,
-                    'sectionId'                      : sectionId,
-                    'fieldId'                        : 'navs_start_date',
-                    'fieldLabel'                     : 'Navs Start Date',
-                    'fieldType'                      : 'html',
-                    'fieldAdditionalClass'           : 'mb-0',
-                    'fieldHelp'                      : true,
-                    'fieldHelpTooltipContent'        : 'Navs Start Date',
-                    'fieldRequired'                  : false,
-                    'fieldBazScan'                   : true,
-                    'fieldBazPostOnUpdate'           : true,
-                    'fieldHtmlContent'               : scheme['start_date']
-                ]
-            )}}
-        </div>
-        <div class="col">
-            {{adminltetags.useTag('fields',
-                [
-                    'component'                      : component,
-                    'componentName'                  : componentName,
-                    'componentId'                    : componentId,
-                    'sectionId'                      : sectionId,
-                    'fieldId'                        : 'navs_end_date',
-                    'fieldLabel'                     : 'Navs End Date',
-                    'fieldType'                      : 'html',
-                    'fieldAdditionalClass'           : 'mb-0',
-                    'fieldHelp'                      : true,
-                    'fieldHelpTooltipContent'        : 'Navs End Date',
-                    'fieldRequired'                  : false,
-                    'fieldBazScan'                   : true,
-                    'fieldBazPostOnUpdate'           : true,
-                    'fieldHtmlContent'               : scheme['navs_last_updated']
-                ]
-            )}}
-        </div>
-        {% for cagr in
-            ['day_cagr',
-            'year_cagr',
-            'two_year_cagr',
-            'three_year_cagr',
-            'five_year_cagr',
-            'seven_year_cagr',
-            'ten_year_cagr',
-            'fifteen_year_cagr']
-        %}
-            {% if scheme[cagr] is defined and scheme[cagr] != 0 %}
-                {% set cagrTextColor = 'danger' %}
-                {% if scheme[cagr] > 0 %}
-                    {% if scheme[cagr] < 10 %}
-                        {% set cagrTextColor = 'warning' %}
-                    {% elseif scheme[cagr] > 10 and scheme[cagr] < 15 %}
-                        {% set cagrTextColor = 'info' %}
-                    {% elseif scheme[cagr] > 15 %}
-                        {% set cagrTextColor = 'success' %}
-                    {% endif %}
-                {% endif %}
-                <div class="col">
-                    {{adminltetags.useTag('fields',
-                        [
-                            'component'                      : component,
-                            'componentName'                  : componentName,
-                            'componentId'                    : componentId,
-                            'sectionId'                      : sectionId,
-                            'fieldId'                        : cagr,
-                            'fieldLabel'                     : str_replace('_', ' ', cagr),
-                            'fieldType'                      : 'html',
-                            'fieldAdditionalClass'           : 'mb-0',
-                            'fieldHelp'                      : true,
-                            'fieldHelpTooltipContent'        : str_replace('_', ' ', cagr) ~ ' till ' ~ scheme['navs_last_updated'],
-                            'fieldRequired'                  : false,
-                            'fieldBazScan'                   : false,
-                            'fieldHtmlContent'               : '<span class="text-' ~ cagrTextColor ~ '">' ~ scheme[cagr] ~ '</span>'
-                        ]
-                    )}}
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <hr>
+    {% set compare = false %}
 {% endif %}
 <div class="row">
     <div class="col">
@@ -152,18 +68,25 @@
     </div>
 </div>
 <hr>
+{% set statisticsHeaders = [] %}
 {% set statisticsHtml =
     '<div class="row">' ~
     '    <div class="col">' ~
     '        <table id="' ~ componentId ~ '-' ~ sectionId ~ '-statistics-table" class="table table-sm table-hover responsive nowrap table-bordered mb-0" width="100%" cellspacing="0">' ~
     '            <thead>' ~
-    '                <tr>' ~
+    '                <tr>' %}
+{% if compare is defined and compare == true %}
+    {% set statisticsHtml = statisticsHtml ~
+    '                    <th class="text-uppercase text-center"></th>' %}
+    {% set statisticsHeaders = array_merge(statisticsHeaders, ['Scheme']) %}
+{% endif %}
+    {% set statisticsHtml = statisticsHtml ~
     '                    <th class="text-uppercase text-center" colspan="4">Return Statistics (%)</th>' ~
     '                    <th class="text-uppercase text-center" colspan="7">Return distribution (% of times)</th>' ~
     '                </tr>' ~
     '                <tr>'
 %}
-{% for statistics in
+{% set statisticsHeaders = array_merge(statisticsHeaders,
     ['average',
     'median',
     'maximum',
@@ -174,9 +97,10 @@
     '10-12%',
     '12-15%',
     '15-20%',
-    '> 20%']
+    '> 20%'])
 %}
-    {% set statisticsHtml = statisticsHtml ~ '<th class="text-uppercase">' ~ statistics ~ '</th>' %}
+{% for statistic in statisticsHeaders %}
+    {% set statisticsHtml = statisticsHtml ~ '<th class="text-uppercase">' ~ statistic ~ '</th>' %}
 {% endfor %}
 {% set statisticsHtml = statisticsHtml ~
     '                </tr>' ~
@@ -241,19 +165,113 @@ if (!dataCollectionSectionForm['vars']) {
 }
 
 dataCollectionSectionForm['vars']['compare'] = '{{compare}}';
-if (dataCollectionSectionForm['vars']['compare'] == true) {
-    //
-}
-
 dataCollectionSectionForm['vars']['rr_period'] = null;
 dataCollectionSectionForm['vars']['rr_start_date'] = '';
+dataCollectionSectionForm['vars']['rrChart'] = { };
+dataCollectionSectionForm['vars']['rrStatistics'] = { };
+dataCollectionSectionForm['vars']['rrDistributions'] = { };
+dataCollectionSectionForm['vars']['rrChunks'] = { };
 
 if (!dataCollectionSectionForm['funcs']) {
     dataCollectionSectionForm['funcs'] = { };
 }
 
-dataCollectionSectionForm['funcs']['initRRChart'] = function(compare = false) {
-    dataCollectionSectionForm['vars']['rrChart'] = echarts.init(document.getElementById('rrChart'), 'macarons');
+dataCollectionSectionForm['funcs']['initRRChart'] = function() {
+    if (Object.keys(dataCollectionSectionForm['vars']['rrChart']).length === 0) {
+        dataCollectionSectionForm['vars']['rrChart'] = echarts.init(document.getElementById('rrChart'), 'macarons');
+    }
+
+    if (dataCollectionSectionForm['vars']['compare'] == true) {
+        dataCollectionSectionForm['vars']['rrChartOptions'] = {
+            title: {
+                text: 'Rolling Return Comparison (%)',
+                left: 'left'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                  type: 'cross'
+                }
+            },
+            legend: {
+                top: 50,
+                center: 'center'
+            },
+            grid: {
+                top: 80,
+            },
+            xAxis: {
+                name: 'PERIOD',
+                nameLocation: 'middle',
+                nameTextStyle: {
+                    lineHeight: 50
+                },
+                data: []
+            },
+            yAxis: {
+                name: 'PERCENT',
+                nameRotate: 90,
+                nameLocation: "middle",
+                nameTextStyle: {
+                    lineHeight: 60,
+                }
+            },
+            dataZoom: [
+                {
+                    type: 'inside'
+                }
+            ],
+            series: []
+        }
+    } else {
+        dataCollectionSectionForm['vars']['rrChartOptions'] = {
+            title: {
+                text: 'Rolling Returns for ' + dataCollectionSectionForm['vars']['scheme']['name'],
+                left: 'left'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                  type: 'cross'
+                }
+            },
+            legend: {
+                top: 50,
+                center: 'center'
+            },
+            grid: {
+                top: 80,
+            },
+            xAxis: {
+                name: 'PERIOD',
+                nameLocation: 'middle',
+                nameTextStyle: {
+                    lineHeight: 50
+                },
+                data: []
+            },
+            yAxis: {
+                name: 'PERCENT',
+                nameRotate: 90,
+                nameLocation: "middle",
+                nameTextStyle: {
+                    lineHeight: 60,
+                }
+            },
+            dataZoom: [
+                {
+                    type: 'inside'
+                }
+            ],
+            series: [
+                {
+                    name: 'CAGR',
+                    type: 'line',
+                    data: [],
+                }
+            ]
+        }
+    }
 
     dataCollectionSectionForm['vars']['rrChart'].off('rendered');
     dataCollectionSectionForm['vars']['rrChart'].on('rendered', function() {
@@ -272,16 +290,16 @@ dataCollectionSectionForm['funcs']['initRRChart'] = function(compare = false) {
 
 setTimeout(function(){
     $(document).ready(function() {
-        if (dataCollectionSectionForm['vars']['compare'] == false) {
+        // if (dataCollectionSectionForm['vars']['compare'] == false) {
             dataCollectionSectionForm['funcs']['initRRChart']();
-        }
+        // }
     });
 }, 1000);
 
 if (dataCollectionSectionForm['vars']['compare'] == false) {//Need this condition else compare will not work.
     dataCollectionSection =
         $.extend(dataCollectionSection, {
-            '{{componentId}}-{{sectionId}}-date_range'                  : {
+            '{{componentId}}-{{sectionId}}-date_range'                          : {
                 dateFormat          : "Y-m-d",
                 altFormat           : "d-m-Y",
                 allowInput          : true,
@@ -297,8 +315,14 @@ if (dataCollectionSectionForm['vars']['compare'] == false) {//Need this conditio
                     }
                 },
                 afterInit: function() {
-                    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate = dataCollectionSectionForm['vars']['scheme']['start_date'];
-                    dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate = dataCollectionSectionForm['vars']['scheme']['navs_last_updated'];
+
+                    if (dataCollectionSectionForm['vars']['scheme']['custom']) {
+                        dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate = dataCollectionSectionForm['vars']['customNavStartDate'];
+                        dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate = dataCollectionSectionForm['vars']['customNavEndDate'];
+                    } else {
+                        dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate = dataCollectionSectionForm['vars']['scheme']['start_date'];
+                        dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate = dataCollectionSectionForm['vars']['scheme']['navs_last_updated'];
+                    }
                 }
             },
             '{{componentId}}-{{sectionId}}-navs_start_date'                     : {
@@ -322,7 +346,7 @@ if (dataCollectionSectionForm['vars']['compare'] == false) {//Need this conditio
                         postData['get_all_navs'] = true;
                         postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
 
-                        $.post('{{links.url("mf/extractdata/getAllNavData")}}', postData, function(response) {
+                        $.post('{{links.url("mf/tools/extractdata/getAllNavData")}}', postData, function(response) {
                             $(thisButton).removeClass('disabled');
                             $(thisButton).children('i').attr('hidden', true);
 
@@ -387,136 +411,328 @@ if (dataCollectionSectionForm['vars']['compare'] == false) {//Need this conditio
                     dataCollectionSectionForm['vars']['rr_start_date'] = dataCollectionSectionForm['vars']['scheme']['start_date'];
                 }
             },
-            '{{componentId}}-{{sectionId}}-form'                                    : {
+            '{{componentId}}-{{sectionId}}-form'                                : {
                 ignore      : ':submit, :reset, :image, :hidden, .ignore, .cr-slider',
                 rules: {
                 },
                 messages: {
                 }
-            }
+            },
+            '{{componentId}}-{{sectionId}}-custom_source'                       : {
+                placeholder: 'SELECT CUSTOM NAVS SOURCE',
+                afterInit : function() {
+                    $('#{{componentId}}-{{sectionId}}-custom_source').on('select2:select', function() {
+                        processCustomSource();
+                    });
+
+                    function processCustomSource() {
+                        dataCollectionSectionForm['vars']['source'] = $('#{{componentId}}-{{sectionId}}-custom_source').select2('data')[0].id;
+
+                        $('.sources').attr('hidden', true);
+                        $('#{{componentId}}-{{sectionId}}-' + dataCollectionSectionForm['vars']['source']).attr('hidden', false);
+
+                        $('#{{componentId}}-{{sectionId}}-number_of_days').val('');
+                        $('#{{componentId}}-{{sectionId}}-total_percent').val('');
+                        $('#{{componentId}}-{{sectionId}}-pattern').val(0).trigger('change');
+                    }
+
+                    processCustomSource();
+                }
+            },
+            '{{componentId}}-{{sectionId}}-pattern'                             : {
+                placeholder: 'SELECT PATTERN',
+                afterInit : function() {
+                    $('#{{componentId}}-{{sectionId}}-pattern').on('select2:select', function() {
+                        dataCollectionSectionForm['vars']['pattern_id'] = $('#{{componentId}}-{{sectionId}}-pattern').select2('data')[0].id;
+                    });
+                }
+            },
+            '{{componentId}}-{{sectionId}}-fixed_linear_number_of_days'         : { },
+            '{{componentId}}-{{sectionId}}-fixed_random_number_of_days'         : { },
+            '{{componentId}}-{{sectionId}}-fixed_linear_total_percent'          : { },
+            '{{componentId}}-{{sectionId}}-fixed_random_total_percent'          : { },
+            '{{componentId}}-{{sectionId}}-custom'                              : {
+                afterInit: function() {
+                    $('#{{componentId}}-{{sectionId}}-generate-custom').off();
+                    $('#{{componentId}}-{{sectionId}}-generate-custom').click(function(e) {
+                        e.preventDefault();
+
+                        dataCollectionSectionForm['vars']['custom'] = [];
+                        dataCollectionSectionForm['vars']['custom_index'] = [];
+
+                        if ($('#{{componentId}}-{{sectionId}}-custom').val() !== '') {
+                            var customs = $('#{{componentId}}-{{sectionId}}-custom').val().split(',');
+
+                            $.each(customs, function(index, custom) {
+                                dataCollectionSectionForm['vars']['custom_index'].push(index);
+                                dataCollectionSectionForm['vars']['custom'].push(custom.trim());
+                            });
+                        }
+
+                        dataCollectionSectionForm['funcs']['generateCustomNav']();
+                    });
+
+                    $('#{{componentId}}-{{sectionId}}-generate-custom-navs').off();
+                    $('#{{componentId}}-{{sectionId}}-generate-custom-navs').click(function(e) {
+                        e.preventDefault();
+
+                        if ($('#{{componentId}}-{{sectionId}}-custom').val() === '') {
+                            paginatedPNotify('error', {text : 'Please generate navs (%) using the navs (%) generator or enter navs (%) separated by comma'});
+
+                            return;
+                        }
+
+                        dataCollectionSectionForm['funcs']['updateSchemeCustomNavs']();
+                    });
+                }
+            },
         });
 }
 
-dataCollectionSectionForm['funcs']['getSchemeRollingReturns'] = function() {
+dataCollectionSectionForm['funcs']['getSchemeRollingReturns'] = function(schemeId = null) {
     $('#rr-chart-intro').attr('hidden', true);
     $('#rr-chart').attr('hidden', true);
     $('#rr-loader').attr('hidden', false);
 
     var postData = { };
     postData[$('#security-token').attr('name')] = $('#security-token').val();
-    postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
+    if (schemeId) {
+        postData['scheme_id'] = schemeId;
+    } else {
+        postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
+    }
     postData['rr_period'] = dataCollectionSectionForm['vars']['rr_period'];
     postData['start_date'] = dataCollectionSectionForm['vars']['rr_start_date'];
+
+    if (dataCollectionSectionForm['vars']['compare'] == true) {
+        postData['compare_start_date'] = dataCollectionSectionForm['vars']['compareSchemesParams']['start_date'];
+    }
+
+    if (dataCollectionSectionForm['vars']['custom']) {
+        postData['customRollingReturns'] = true;
+    }
 
     $.post('{{links.url("mf/schemes/getSchemeRollingReturns")}}', postData, function(response) {
         $('#rr-loader').attr('hidden', true);
 
         if (response.responseCode == 0 && response.responseData.rrData) {
-            var cagrs = [];
-            var periods = [];
+            dataCollectionSectionForm['funcs']['processResponseData'](postData, response);
 
-            for (var data in response.responseData.rrData) {
-                cagrs.push(response.responseData.rrData[data]['cagr']);
-                periods.push(response.responseData.rrData[data]['from'] + ' to ' + response.responseData.rrData[data]['to']);
+            dataCollectionSectionForm['funcs']['processRRChart']();
+        } else {
+            paginatedPNotify('error', response.responseMessage);
+        }
+
+        if (response.tokenKey && response.token) {
+            $("#security-token").attr("name", response.tokenKey);
+            $("#security-token").val(response.token);
+        }
+    }, 'json');
+}
+
+dataCollectionSectionForm['funcs']['processResponseData'] = function(postData, response) {
+    dataCollectionSectionForm['vars']['rrChunks'][postData['scheme_id']] = { };
+    dataCollectionSectionForm['vars']['rrChunks'][postData['scheme_id']]['cagrs'] = [];
+    dataCollectionSectionForm['vars']['rrChunks'][postData['scheme_id']]['periods'] = [];
+
+    for (var data in response.responseData.rrData) {
+        dataCollectionSectionForm['vars']['rrChunks'][postData['scheme_id']]['cagrs']
+            .push(response.responseData.rrData[data]['cagr']);
+        dataCollectionSectionForm['vars']['rrChunks'][postData['scheme_id']]['periods']
+            .push(response.responseData.rrData[data]['from'] + ' to ' + response.responseData.rrData[data]['to']);
+    }
+
+    dataCollectionSectionForm['vars']['rrChunks'][postData['scheme_id']]['rrStatistics'] = response.responseData.statistics;
+    dataCollectionSectionForm['vars']['rrChunks'][postData['scheme_id']]['rrDistributions'] = response.responseData.distribution;
+}
+
+dataCollectionSectionForm['funcs']['processRRChart'] = function() {
+    if (dataCollectionSectionForm['vars']['compare'] == true &&
+        Object.keys(dataCollectionSectionForm['vars']['rrChunks']).length !== Object.keys(dataCollectionSectionForm['vars']['compareSchemes']).length
+    ) {
+        return;
+    }
+
+    dataCollectionSectionForm['vars']['rrChartOptions']['series'] = [];
+
+    var counter = 0;
+
+    $.each(dataCollectionSectionForm['vars']['rrChunks'], function(schemeId, rrData) {
+        dataCollectionSectionForm['vars']['rrChartOptions']['series'][counter] = { };
+        dataCollectionSectionForm['vars']['rrChartOptions']['series'][counter]['type'] = 'line';
+
+        if (dataCollectionSectionForm['vars']['compare'] == true) {
+            dataCollectionSectionForm['vars']['rrChartOptions']['series'][counter]['name'] = dataCollectionSectionForm['vars']['compareSchemes'][schemeId]['name'];
+        } else {
+            dataCollectionSectionForm['vars']['rrChartOptions']['series'][counter]['name'] = dataCollectionSectionForm['vars']['scheme']['name'];
+        }
+        dataCollectionSectionForm['vars']['rrChartOptions']['series'][counter]['data'] = dataCollectionSectionForm['vars']['rrChunks'][schemeId]['cagrs'];
+
+        if (dataCollectionSectionForm['vars']['compare'] == true) {
+            dataCollectionSectionForm['vars']['scheme'] = dataCollectionSectionForm['vars']['compareSchemes'][schemeId];
+        }
+
+        dataCollectionSectionForm['vars']['rrChartOptions']['xAxis']['data'] = dataCollectionSectionForm['vars']['rrChunks'][schemeId]['periods'];
+        counter++;
+    });
+
+    if (dataCollectionSectionForm['vars']['compare'] == true &&
+        Object.keys(dataCollectionSectionForm['vars']['rrChunks']).length !== dataCollectionSectionForm['vars']['rrChartOptions']['series'].length
+    ) {
+        return;
+    }
+
+    dataCollectionSectionForm['vars']['rrChart'].setOption({series: []}, {replaceMerge: ['series']});
+
+    dataCollectionSectionForm['vars']['rrChart'].setOption(dataCollectionSectionForm['vars']['rrChartOptions']);
+
+    $('#rr-chart').attr('hidden', false);
+
+    dataCollectionSectionForm['funcs']['popluateStatisticsTable']();
+}
+
+dataCollectionSectionForm['funcs']['popluateStatisticsTable'] = function() {
+    var statsHtml = '';
+
+    $.each(dataCollectionSectionForm['vars']['rrChunks'], function(schemeId, rrData) {
+        statsHtml += '<tr>';
+
+        if (dataCollectionSectionForm['vars']['compare'] == true) {
+            statsHtml += '<td>' + dataCollectionSectionForm['vars']['compareSchemes'][schemeId]['name'] + '</td>';
+        }
+
+        if (rrData['rrStatistics']) {
+            if (rrData['rrStatistics']['average']) {
+                statsHtml += '<td>' + rrData['rrStatistics']['average'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
             }
+            if (rrData['rrStatistics']['median']) {
+                statsHtml += '<td>' + rrData['rrStatistics']['median'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrStatistics']['max']) {
+                statsHtml += '<td>' + rrData['rrStatistics']['max'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrStatistics']['min']) {
+                statsHtml += '<td>' + rrData['rrStatistics']['min'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+        }
+        if (rrData['rrDistributions']) {
+            if (rrData['rrDistributions']['negative']) {
+                statsHtml += '<td>' + rrData['rrDistributions']['negative'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrDistributions']['0-8']) {
+                statsHtml += '<td>' + rrData['rrDistributions']['0-8'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrDistributions']['8-10']) {
+                statsHtml += '<td>' + rrData['rrDistributions']['8-10'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrDistributions']['10-12']) {
+                statsHtml += '<td>' + rrData['rrDistributions']['10-12'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrDistributions']['12-15']) {
+                statsHtml += '<td>' + rrData['rrDistributions']['12-15'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrDistributions']['15-20']) {
+                statsHtml += '<td>' + rrData['rrDistributions']['15-20'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+            if (rrData['rrDistributions']['20+']) {
+                statsHtml += '<td>' + rrData['rrDistributions']['20+'] + '</td>';
+            } else {
+                statsHtml += '<td>0</td>';
+            }
+        }
+        statsHtml += '</tr>';
+    });
 
-            dataCollectionSectionForm['vars']['rrChart'].setOption({
-                title: {
-                    text: 'Rolling Returns for ' + dataCollectionSectionForm['vars']['scheme']['name']
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    axisPointer: {
-                      type: 'cross'
-                    }
-                },
-                legend: {},
-                xAxis: {
-                    name: 'PERIOD',
-                    data: periods
-                },
-                yAxis: {
-                    name: 'PERCENT'
-                },
-                dataZoom: [
-                    {
-                        type: 'inside'
-                    }
-                ],
-                series: [
-                    {
-                        name: 'CAGR',
-                        type: 'line',
-                        data: cagrs,
-                    }
-                ]
+    $('#{{componentId}}-{{sectionId}}-statistics-table tbody').html(statsHtml);
+}
+
+dataCollectionSectionForm['funcs']['updateSchemeCustomNavs'] = function() {
+    var postData = { };
+    postData[$('#security-token').attr('name')] = $('#security-token').val();
+    postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
+    postData['custom_navs_percent'] = $('#{{componentId}}-{{sectionId}}-custom').val();
+
+    $.post('{{links.url("mf/schemes/updateSchemeCustomNavs")}}', postData, function(response) {
+        if (response.tokenKey && response.token) {
+            $("#security-token").attr("name", response.tokenKey);
+            $("#security-token").val(response.token);
+        }
+
+        if (response.responseCode === 0) {
+            if (response.responseData.scheme && response.responseData.scheme.navs && response.responseData.scheme.navs.navs) {
+                dataCollectionSectionForm['vars']['schemeNavs'] = response.responseData.scheme.navs.navs;
+                dataCollectionSectionForm['funcs']['processSchemeData']();
+                if ($('#{{componentId}}-{{sectionId}}-custom').val() !== '') {
+                    $('#{{componentId}}-{{sectionId}}-custom')
+                        .val(
+                            $('#{{componentId}}-{{sectionId}}-custom').val() + ',' + dataCollectionSectionForm['vars']['schemeNavsPercent'].toString()
+                        );
+                } else {
+                    $('#{{componentId}}-{{sectionId}}-custom').val(dataCollectionSectionForm['vars']['schemeNavsPercent'].toString());
+                }
+            } else {
+                paginatedPNotify('error', {
+                    text : 'Scheme data not found!'
+                });
+            }
+        } else {
+            paginatedPNotify('error', {
+                text : response.responseMessage
             });
+        }
+    }, 'json');
+}
 
-            $('#rr-chart').attr('hidden', false);
+dataCollectionSectionForm['funcs']['generateCustomNav'] = function() {
+    var postData = { };
+    postData[$('#security-token').attr('name')] = $('#security-token').val();
+    postData['source'] = dataCollectionSectionForm['vars']['source'];
+    if (Object.keys(dataCollectionSectionForm['vars']['custom']).length === 0) {
+        postData['startValue'] = 0;
+    } else {
+        postData['startValue'] = dataCollectionSectionForm['vars']['custom'][dataCollectionSectionForm['vars']['custom'].length - 1];
+    }
+    if (dataCollectionSectionForm['vars']['source'] === 'fixed_linear' ||
+        dataCollectionSectionForm['vars']['source'] === 'fixed_random'
+    ) {
+        postData['numberOfDays'] = $('#{{componentId}}-{{sectionId}}-' + postData['source'] +  '_number_of_days').val();
+        postData['totalPercent'] = $('#{{componentId}}-{{sectionId}}-' + postData['source'] +  '_total_percent').val();
+    } else if (dataCollectionSectionForm['vars']['source'] === 'current_navs') {
+        postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
+    } else if (dataCollectionSectionForm['vars']['source'] === 'patterns') {
+        postData['pattern_id'] = dataCollectionSectionForm['vars']['pattern_id'];
+    }
 
-            var statsHtml = '<tr>';
-            if (response.responseData.statistics) {
-                if (response.responseData.statistics['average']) {
-                    statsHtml += '<td>' + response.responseData.statistics['average'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.statistics['median']) {
-                    statsHtml += '<td>' + response.responseData.statistics['median'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.statistics['max']) {
-                    statsHtml += '<td>' + response.responseData.statistics['max'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.statistics['min']) {
-                    statsHtml += '<td>' + response.responseData.statistics['min'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
+    $.post('{{links.url("mf/schemes/generateCustomNav")}}', postData, function(response) {
+        if (response.responseCode == 0 && response.responseData.pattern) {
+            if ($('#{{componentId}}-{{sectionId}}-custom').val() !== '') {
+                $('#{{componentId}}-{{sectionId}}-custom')
+                    .val(
+                        $('#{{componentId}}-{{sectionId}}-custom').val() + ',' + response.responseData.pattern.toString()
+                    );
+            } else {
+                $('#{{componentId}}-{{sectionId}}-custom').val(response.responseData.pattern.toString());
             }
-            if (response.responseData.distribution) {
-                if (response.responseData.distribution['negative']) {
-                    statsHtml += '<td>' + response.responseData.distribution['negative'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.distribution['0-8']) {
-                    statsHtml += '<td>' + response.responseData.distribution['0-8'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.distribution['8-10']) {
-                    statsHtml += '<td>' + response.responseData.distribution['8-10'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.distribution['10-12']) {
-                    statsHtml += '<td>' + response.responseData.distribution['10-12'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.distribution['12-15']) {
-                    statsHtml += '<td>' + response.responseData.distribution['12-15'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.distribution['15-20']) {
-                    statsHtml += '<td>' + response.responseData.distribution['15-20'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-                if (response.responseData.distribution['20+']) {
-                    statsHtml += '<td>' + response.responseData.distribution['20+'] + '</td>';
-                } else {
-                    statsHtml += '<td>0</td>';
-                }
-            }
-            statsHtml += '</tr>';
-
-            $('#{{componentId}}-{{sectionId}}-statistics-table tbody').html(statsHtml);
         } else {
             paginatedPNotify('error', response.responseMessage);
         }

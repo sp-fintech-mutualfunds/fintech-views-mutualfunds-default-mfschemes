@@ -1,0 +1,24 @@
+<div class="col sources" id="{{componentId}}-{{sectionId}}-patterns" hidden>
+    {{adminltetags.useTag('fields',
+        [
+            'component'                         : component,
+            'componentName'                     : componentName,
+            'componentId'                       : componentId,
+            'sectionId'                         : sectionId,
+            'fieldId'                           : 'pattern',
+            'fieldLabel'                        : 'Pattern',
+            'fieldType'                         : 'select2',
+            'fieldHelp'                         : false,
+            'fieldHelpTooltipContent'           : 'Select pattern to apply.',
+            'fieldRequired'                     : false,
+            'fieldBazScan'                      : true,
+            'fieldBazPostOnCreate'              : false,
+            'fieldBazPostOnUpdate'              : false,
+            'fieldDataSelect2Options'           : patterns,
+            'fieldDataSelect2OptionsKey'        : 'id',
+            'fieldDataSelect2OptionsValue'      : 'name',
+            'fieldDataSelect2OptionsArray'      : true,
+            'fieldDataSelect2OptionsSelected'   : ''
+        ]
+    )}}
+</div>

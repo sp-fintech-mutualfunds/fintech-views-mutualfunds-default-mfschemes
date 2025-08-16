@@ -1,6 +1,15 @@
 {% if scheme['id'] is defined %}
     {% set schemeId = scheme['id'] %}
     {% set title = 'Scheme (' ~ escaper.html(scheme['name']) ~ ')' %}
+    {% set bodyInclude = 'schemes/form' %}
+    {% set cardType = 'primary' %}
+    {% set cardIcon = 'circle-dot' %}
+    {% if custom is defined and custom == true %}
+        {% set title = 'Scheme Custom Navs (' ~ escaper.html(scheme['name']) ~ ')' %}
+        {% set bodyInclude = 'schemes/custom' %}
+        {% set cardType = 'info' %}
+        {% set cardIcon = 'money-bill-trend-up' %}
+    {% endif %}
     {{adminltetags.useTag('content',
         [
             'component'                     : component,
@@ -11,11 +20,11 @@
             'contentType'                   : 'sectionWithForm',
             'cardHeader'                    : true,
             'cardFooter'                    : true,
-            'cardType'                      : 'primary',
-            'cardIcon'                      : 'circle-dot',
+            'cardType'                      : cardType,
+            'cardIcon'                      : cardIcon,
             'cardTitle'                     : title,
             'cardAdditionalClass'           : 'rounded-0',
-            'cardBodyInclude'               : 'schemes/form',
+            'cardBodyInclude'               : bodyInclude,
             'cardShowTools'                 : ['packageSettings'],
             'formButtons'                   :
             [

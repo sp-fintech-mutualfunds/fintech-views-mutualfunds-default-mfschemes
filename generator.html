@@ -1,0 +1,117 @@
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                         : component,
+                'componentName'                     : componentName,
+                'componentId'                       : componentId,
+                'sectionId'                         : sectionId,
+                'fieldId'                           : 'custom_source',
+                'fieldLabel'                        : 'Custom Navs Source',
+                'fieldType'                         : 'select2',
+                'fieldHelp'                         : false,
+                'fieldHelpTooltipContent'           : 'Select custom navs source.',
+                'fieldRequired'                     : true,
+                'fieldBazScan'                      : true,
+                'fieldBazPostOnCreate'              : false,
+                'fieldBazPostOnUpdate'              : false,
+                'fieldDataSelect2Options'           :
+                    [
+                        'current_navs'                      : [
+                            'id'                            : 'current_navs',
+                            'name'                          : 'NAVS FROM SCHEME'
+                        ],
+                        'patterns'                           : [
+                            'id'                            : 'patterns',
+                            'name'                          : 'SELECT FROM PATTERN'
+                        ],
+                        'fixed_linear'                      : [
+                            'id'                            : 'fixed_linear',
+                            'name'                          : 'FIXED (LINEAR)'
+                        ],
+                        'fixed_random'                      : [
+                            'id'                            : 'fixed_random',
+                            'name'                          : 'FIXED (RANDOM)'
+                        ]
+                    ],
+                'fieldDataSelect2OptionsKey'        : 'id',
+                'fieldDataSelect2OptionsValue'      : 'name',
+                'fieldDataSelect2OptionsArray'      : true,
+                'fieldDataSelect2OptionsSelected'   : 'current_navs'
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    {% include 'schemes/generator/pattern.html' %}
+    {% include 'schemes/generator/fixedlinear.html' %}
+    {% include 'schemes/generator/fixedrandom.html' %}
+</div>
+<hr>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('buttons',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'buttonType'                    : 'button',
+                'buttons'                       :
+                    [
+                        'generate-custom'        : [
+                            'title'                   : 'generate custom navs (%)',
+                            'type'                    : 'success',
+                            'position'                : 'right'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'fieldId'                        : 'custom',
+                'fieldLabel'                     : 'Custom Navs (%)',
+                'fieldType'                      : 'textarea',
+                'fieldDataMaxLength'             : 262144,
+                'fieldHelp'                      : true,
+                'fieldHelpTooltipContent'        : 'Generate custom navs (%) using generator tool or enter patter in form on percentages, comma separated.',
+                'fieldRequired'                  : false,
+                'fieldBazScan'                   : true,
+                'fieldBazJstreeSearch'           : true,
+                'fieldBazPostOnCreate'           : true,
+                'fieldBazPostOnUpdate'           : true,
+                'fieldDataInputMaxLength'        : 262144,
+                'fieldTextareaRows'              : 4,
+                'fieldValue'                     : implode(',', scheme['custom'])
+            ]
+        )}}
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('buttons',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'buttonType'                    : 'button',
+                'buttons'                       :
+                    [
+                        'generate-custom-navs'        : [
+                            'title'                   : 'generate custom navs & rolling returns'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>
+{% set scheme = escaper.js(json_encode(scheme, 16)) %}

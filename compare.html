@@ -1,5 +1,28 @@
 <div class="row">
-    <div class="col">{{adminltetags.useTag('fields',
+    <div class="col">
+        {{adminltetags.useTag('fields',
+            [
+                'component'                                 : component,
+                'componentName'                             : componentName,
+                'componentId'                               : componentId,
+                'sectionId'                                 : sectionId,
+                'fieldId'                                   : 'scheme_timeline',
+                'fieldLabel'                                : 'Timeline Date',
+                'fieldType'                                 : 'flatpickr',
+                'fieldHelp'                                 : true,
+                'fieldHelpTooltipContent'                   : 'Select date to go to the timeline date.',
+                'fieldRequired'                             : false,
+                'fieldBazScan'                              : true,
+                'fieldBazPostOnUpdate'                      : false,
+                'fieldFlatpickrPreAddonButtonId'            : 'today',
+                'fieldFlatpickrPreAddonButtonClass'         : 'secondary',
+                'fieldFlatpickrPreAddonButtonValue'         : '<i class="fas fa-fw fa-calendar"></i>',
+                'fieldFlatpickrPreAddonButtonTooltipTitle'  : 'Today'
+            ]
+        )}}
+    </div>
+    <div class="col">
+        {{adminltetags.useTag('fields',
             [
                 'component'                      : component,
                 'componentName'                  : componentName,
@@ -123,6 +146,29 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col">
+        {{adminltetags.useTag('buttons',
+            [
+                'component'                      : component,
+                'componentName'                  : componentName,
+                'componentId'                    : componentId,
+                'sectionId'                      : sectionId,
+                'buttonType'                    : 'button',
+                'buttons'                       :
+                    [
+                        'navs-link'    : [
+                            'title'                   : 'link',
+                            'size'                    : 'xs',
+                            'disabled'                : true,
+                            'hidden'                  : true,
+                            'url'                     : '#'
+                        ]
+                    ]
+            ]
+        )}}
+    </div>
+</div>
 {% set categories = escaper.js(json_encode(categories, 16)) %}
 <script>
 /*global paginatedPNotify BazProgress BazContentFields BazHelpers BazContentLoader Pace BazCore dataCollection echarts dayjs_plugin_minMax dayjs */
@@ -156,6 +202,7 @@ dataCollectionSectionForm['vars']['categorySchemes'] = { };
 dataCollectionSectionForm['vars']['compareSchemes'] = { };
 dataCollectionSectionForm['vars']['compareSchemesParams'] = { };
 dataCollectionSectionForm['vars']['categories'] = JSON.parse('{{categories}}');
+dataCollectionSectionForm['vars']['schemetimeline'] = '{{timeline}}';
 
 dataCollectionSectionForm['funcs']['addToCompare'] = function() {
     if ($('#{{componentId}}-{{sectionId}}-compare-table tbody tr').length >= 4) {
@@ -182,7 +229,9 @@ dataCollectionSectionForm['funcs']['addToCompare'] = function() {
     } else {
         compareHtml += '<td>-</td>';
     }
-    if (scheme['navs_last_updated']) {
+    if (dataCollectionSectionForm['vars']['schemetimeline']) {
+        compareHtml += '<td>' + dataCollectionSectionForm['vars']['schemetimeline'] + '</td>';
+    } else if (scheme['navs_last_updated']) {
         compareHtml += '<td>' + scheme['navs_last_updated'] + '</td>';
     } else {
         compareHtml += '<td>-</td>';
@@ -228,6 +277,10 @@ dataCollectionSectionForm['funcs']['getSchemeData'] = function(id) {
     postData['navs_chunks'] = true;
     postData['trend'] = true;
     postData['rolling_returns'] = true;
+
+    if (dataCollectionSectionForm['vars']['schemetimeline'] !== '') {
+        postData['timeline'] = dataCollectionSectionForm['vars']['schemetimeline'];
+    }
 
     $.post('{{links.url("mf/schemes/getProcessedSchemeData")}}', postData, function(response) {
         if (response.tokenKey && response.token) {
@@ -278,12 +331,12 @@ dataCollectionSectionForm['funcs']['processCompareData'] = function() {
 
     dataCollectionSectionForm['vars']['compareSchemesParams']['chunks'] = { };
 
-    $.each(['week', 'month', 'threeMonth', 'sixMonth', 'year', 'threeYear', 'fiveYear', 'tenYear', 'all'], function(index, chunk) {
+    $.each(['week', 'month', 'threeMonth', 'sixMonth', 'year', 'threeYear', 'fiveYear', 'tenYear', 'fifteenYear', 'twentyYear', 'twentyFiveYear', 'thirtyYear', 'all'], function(index, chunk) {
         dataCollectionSectionForm['vars']['compareSchemesParams']['chunks'][chunk] = true;
     });
 
     dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_returns'] = { };
-    $.each(['year', 'two_year', 'three_year', 'five_year', 'seven_year', 'ten_year', 'fifteen_year'], function(index, rrTerm) {
+    $.each(['year', 'two_year', 'three_year', 'five_year', 'seven_year', 'ten_year', 'fifteen_year', 'twenty_year', 'twenty_five_year', 'thirty_year'], function(index, rrTerm) {
         dataCollectionSectionForm['vars']['compareSchemesParams']['rolling_returns'][rrTerm] = true;
     });
 
@@ -315,6 +368,18 @@ dataCollectionSectionForm['funcs']['processCompareData'] = function() {
         "fifteen_year" : {
             "id": "fifteen_year",
             "name": "FIFTEEN YEAR"
+        },
+        "twenty_year" : {
+            "id": "twenty_year",
+            "name": "TWENTY YEAR"
+        },
+        "twenty_five_year" : {
+            "id": "twenty_five_year",
+            "name": "TWENTY FIVE YEAR"
+        },
+        "thirty_year" : {
+            "id": "thirty_year",
+            "name": "THIRTY YEAR"
         }
     }
 
@@ -427,6 +492,39 @@ dataCollectionSectionForm['funcs']['processCompareData'] = function() {
 
 dataCollectionSection =
     $.extend(dataCollectionSection, {
+        '{{componentId}}-{{sectionId}}-scheme_timeline'                     : {
+            dateFormat          : "Y-m-d",
+            altFormat           : "d-m-Y",
+            allowInput          : true,
+            static              : true,
+            maxDate             : "today",
+            onChange: function(selectedDates, dateStr, instance) {
+                if (dateStr !== '') {
+                    dateStr = dataCollectionSection['{{componentId}}-{{sectionId}}-scheme_timeline']['flatpickr'].formatDate(instance.parseDate(dateStr), 'd-m-Y');
+
+                    dataCollectionSectionForm['funcs']['browse']('{{links.url("mf/schemes/q/compare/true/timeline/' + dateStr + '")}}');
+                }
+            },
+            disable: [
+                function(date) {
+                    // return true to disable
+                    return (date.getDay() === 0 || date.getDay() === 6);
+                }
+            ],
+            locale: {
+                "firstDayOfWeek": 1 // start week on Monday
+            },
+            afterInit: function() {
+                dataCollectionSection['{{componentId}}-{{sectionId}}-scheme_timeline']['flatpickr'].setDate(dataCollectionSectionForm['vars']['schemetimeline']);
+
+                $('#{{componentId}}-{{sectionId}}-scheme_timeline-today').off();
+                $('#{{componentId}}-{{sectionId}}-scheme_timeline-today').click(function(e) {
+                    e.preventDefault();
+
+                    dataCollectionSectionForm['funcs']['browse']('{{links.url("mf/schemes/q/compare/true")}}');
+                });
+            }
+        },
         '{{componentId}}-{{sectionId}}-category_id'                 : {
             placeholder: "SELECT CATEGORY",
             afterInit: function() {
@@ -447,6 +545,9 @@ dataCollectionSection =
                     query[$('#security-token').attr('name')] = $('#security-token').val();
                     query['category_id'] = $('#{{componentId}}-{{sectionId}}-category_id').val();
                     query['search'] = params.term;
+                    if (dataCollectionSectionForm['vars']['schemetimeline']) {
+                        query['timeline'] = dataCollectionSectionForm['vars']['schemetimeline'];
+                    }
 
                     return query;
                 },
@@ -460,7 +561,6 @@ dataCollectionSection =
                             if (dataCollectionSectionForm['vars']['compareSchemes'][response.responseData.schemes[scheme]["id"]]) {
                                 continue;
                             }
-
                             schemesData.push({
                                 "id"    : response.responseData.schemes[scheme]["id"],
                                 "text"  : response.responseData.schemes[scheme]["name"]
@@ -483,49 +583,49 @@ dataCollectionSection =
                     dataCollectionSectionForm['funcs']['addToCompare']();
                 });
 
-                $('#{{componentId}}-{{sectionId}}-import').off();
-                $('#{{componentId}}-{{sectionId}}-import').click(function(e) {
-                    e.preventDefault();
+                // $('#{{componentId}}-{{sectionId}}-import').off();
+                // $('#{{componentId}}-{{sectionId}}-import').click(function(e) {
+                //     e.preventDefault();
 
-                    var thisButton = $(this);
-                    $(thisButton).addClass('disabled');
-                    $(thisButton).children('i').attr('hidden', false);
+                //     var thisButton = $(this);
+                //     $(thisButton).addClass('disabled');
+                //     $(thisButton).children('i').attr('hidden', false);
 
-                    $('#timeline-buttons').attr('hidden', true);
-                    $('#datatype-buttons').attr('hidden', true);
-                    $('#timeline-import').attr('hidden', false);
-                    $('#timeline-chart').attr('hidden', true);
-                    $('#navs-table').attr('hidden', true);
+                //     $('#timeline-buttons').attr('hidden', true);
+                //     $('#datatype-buttons').attr('hidden', true);
+                //     $('#timeline-import').attr('hidden', false);
+                //     $('#timeline-chart').attr('hidden', true);
+                //     $('#navs-table').attr('hidden', true);
 
-                    var postData = { };
-                    postData[$('#security-token').attr('name')] = $('#security-token').val();
-                    postData['get_all_navs'] = true;
-                    postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
+                //     var postData = { };
+                //     postData[$('#security-token').attr('name')] = $('#security-token').val();
+                //     postData['get_all_navs'] = true;
+                //     postData['scheme_id'] = dataCollectionSectionForm['vars']['scheme']['id'];
 
-                    $.post('{{links.url("mf/tools/extractdata/getAllNavData")}}', postData, function(response) {
-                        $(thisButton).removeClass('disabled');
-                        $(thisButton).children('i').attr('hidden', true);
+                //     $.post('{{links.url("mf/tools/extractdata/getAllNavData")}}', postData, function(response) {
+                //         $(thisButton).removeClass('disabled');
+                //         $(thisButton).children('i').attr('hidden', true);
 
-                        $('#timeline-buttons').attr('hidden', false);
-                        $('#datatype-buttons').attr('hidden', false);
-                        $('#timeline-import').attr('hidden', true);
-                        $('#timeline-chart').attr('hidden', false);
-                        $('#navs-table').attr('hidden', false);
+                //         $('#timeline-buttons').attr('hidden', false);
+                //         $('#datatype-buttons').attr('hidden', false);
+                //         $('#timeline-import').attr('hidden', true);
+                //         $('#timeline-chart').attr('hidden', false);
+                //         $('#navs-table').attr('hidden', false);
 
-                        if (response.responseCode == 0) {
-                            paginatedPNotify('success', response.responseMessage);
+                //         if (response.responseCode == 0) {
+                //             paginatedPNotify('success', response.responseMessage);
 
-                            dataCollectionSectionForm['funcs']['browse']($(thisButton).attr('href'));
-                        } else {
-                            paginatedPNotify('error', response.responseMessage);
-                        }
+                //             dataCollectionSectionForm['funcs']['browse']($(thisButton).attr('href'));
+                //         } else {
+                //             paginatedPNotify('error', response.responseMessage);
+                //         }
 
-                        if (response.tokenKey && response.token) {
-                            $("#security-token").attr("name", response.tokenKey);
-                            $("#security-token").val(response.token);
-                        }
-                    }, 'json');
-                });
+                //         if (response.tokenKey && response.token) {
+                //             $("#security-token").attr("name", response.tokenKey);
+                //             $("#security-token").val(response.token);
+                //         }
+                //     }, 'json');
+                // });
             }
         },
         '{{componentId}}-{{sectionId}}-date_range'                  : {
@@ -547,8 +647,8 @@ dataCollectionSection =
                 }
             },
             afterInit: function() {
-                dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.minDate = dataCollectionSectionForm['vars']['scheme']['start_date'];
-                dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr'].config.maxDate = dataCollectionSectionForm['vars']['scheme']['navs_last_updated'];
+                dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr']['minDate'] = dataCollectionSectionForm['vars']['scheme']['start_date'];
+                dataCollectionSection['{{componentId}}-{{sectionId}}-date_range']['flatpickr']['maxDate'] = dataCollectionSectionForm['vars']['scheme']['navs_last_updated'];
             }
         },
         '{{componentId}}-{{sectionId}}-navs_start_date'             : { },
@@ -608,4 +708,24 @@ dataCollectionSection =
             }
         }
     });
+
+dataCollectionSectionForm['funcs']['browse'] = function(url) {
+    $('#{{componentId}}-{{sectionId}}-navs-link').attr('href', url);
+
+    BazContentLoader.loadAjax($('#{{componentId}}-{{sectionId}}-navs-link'), {
+        ajaxBefore                      : function () {
+                                            Pace.restart();
+                                            $("#baz-content").empty();
+                                            $("#loader").attr('hidden', false);
+                                        },
+        ajaxFinished                    : function () {
+                                            BazCore.updateBreadcrumb();
+                                            $("#loader").attr('hidden', true);
+                                        },
+        ajaxError                       : function () {
+                                            $("#loader").attr('hidden', true);
+                                            BazCore.updateBreadcrumb();
+                                        }
+    });
+}
 </script>

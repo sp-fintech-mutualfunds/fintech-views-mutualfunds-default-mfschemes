@@ -1,4 +1,8 @@
 {% if compare is defined %}
+    {% set cancelCloseUrl = 'mf/schemes' %}
+    {% if timeline %}
+        {% set cancelCloseUrl = 'mf/schemes/q/timeline/' ~ timeline %}
+    {% endif %}
     {{adminltetags.useTag('content',
         [
             'component'                     : component,
@@ -17,8 +21,8 @@
             'cardBodyInclude'               : 'schemes/compare',
             'formButtons'                   :
             [
-                'cancelActionUrl'               : 'mf/schemes',
-                'closeActionUrl'                : 'mf/schemes'
+                'cancelActionUrl'               : cancelCloseUrl,
+                'closeActionUrl'                : cancelCloseUrl
             ]
         ]
     )}}

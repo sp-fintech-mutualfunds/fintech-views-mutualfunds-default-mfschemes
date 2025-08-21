@@ -513,6 +513,7 @@ dataCollectionSectionForm['vars']['scheme'] = { };
 dataCollectionSectionForm['vars']['navs_chunks'] = { };
 dataCollectionSectionForm['vars']['trend'] = { };
 dataCollectionSectionForm['vars']['compare'] = '{{compare}}';
+dataCollectionSectionForm['vars']['schemetimeline'] = '{{timeline}}';
 
 if (dataCollectionSectionForm['vars']['compare'] == true) {
     dataCollectionSectionForm['vars']['dataType'] = 'diff_percent';
@@ -1014,6 +1015,10 @@ dataCollectionSectionForm['funcs']['getSchemeNavChunks'] = function(chunksize, r
 
     if (dataCollectionSectionForm['vars']['custom']) {
         postData['customChunks'] = true;
+    }
+
+    if (dataCollectionSectionForm['vars']['schemetimeline'] !== '') {
+        postData['timeline'] = dataCollectionSectionForm['vars']['schemetimeline'];
     }
 
     $.post('{{links.url("mf/schemes/getSchemeNavChunks")}}', postData, function(response) {

@@ -512,6 +512,10 @@ dataCollectionSectionForm['funcs']['getSchemeRollingReturns'] = function(schemeI
         postData['customRollingReturns'] = true;
     }
 
+    if (dataCollectionSectionForm['vars']['schemetimeline'] !== '') {
+        postData['timeline'] = dataCollectionSectionForm['vars']['schemetimeline'];
+    }
+
     $.post('{{links.url("mf/schemes/getSchemeRollingReturns")}}', postData, function(response) {
         $('#rr-loader').attr('hidden', true);
 

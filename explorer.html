@@ -3,18 +3,22 @@
     <div class="col">
         {{adminltetags.useTag('fields',
             [
-                'component'                      : component,
-                'componentName'                  : componentName,
-                'componentId'                    : componentId,
-                'sectionId'                      : sectionId,
-                'fieldId'                        : 'scheme_timeline',
-                'fieldLabel'                     : 'Timeline Date',
-                'fieldType'                      : 'flatpickr',
-                'fieldHelp'                      : true,
-                'fieldHelpTooltipContent'        : 'Select date to go to the timeline date.',
-                'fieldRequired'                  : false,
-                'fieldBazScan'                   : true,
-                'fieldBazPostOnUpdate'           : false
+                'component'                                 : component,
+                'componentName'                             : componentName,
+                'componentId'                               : componentId,
+                'sectionId'                                 : sectionId,
+                'fieldId'                                   : 'scheme_timeline',
+                'fieldLabel'                                : 'Timeline Date',
+                'fieldType'                                 : 'flatpickr',
+                'fieldHelp'                                 : true,
+                'fieldHelpTooltipContent'                   : 'Select date to go to the timeline date.',
+                'fieldRequired'                             : false,
+                'fieldBazScan'                              : true,
+                'fieldBazPostOnUpdate'                      : false,
+                'fieldFlatpickrPreAddonButtonId'            : 'today',
+                'fieldFlatpickrPreAddonButtonClass'         : 'secondary',
+                'fieldFlatpickrPreAddonButtonValue'         : '<i class="fas fa-fw fa-calendar"></i>',
+                'fieldFlatpickrPreAddonButtonTooltipTitle'  : 'Today'
             ]
         )}}
     </div>
@@ -69,6 +73,10 @@
 </div>
 <div class="row">
     <div class="col">
+        {% set compareUrl = links.url('mf/schemes/q/compare/true') %}
+        {% if timeline %}
+            {% set compareUrl = links.url('mf/schemes/q/compare/true/timeline/') ~ timeline %}
+        {% endif %}
         {{adminltetags.useTag('content',
             [
                 'component'                 : table['component'],
@@ -97,7 +105,7 @@
                 'dtStateSave'               : false,
                 'dtBordered'                : false,
                 'dtHideIdColumn'            : true,
-                'dtNoOfColumnsToShow'       : 16,
+                'dtNoOfColumnsToShow'       : 12,
                 'dtTableCompact'            : true,
                 'dtZeroRecords'             : 'No schemes data available.',
                 'dtPrimaryButtons'          :
@@ -114,7 +122,7 @@
                                     'icon'                    : 'equals',
                                     'position'                : 'right',
                                     'buttonAdditionalClass'   : 'contentAjaxLink',
-                                    'url'                     : links.url('mf/schemes/q/compare/true')
+                                    'url'                     : compareUrl
                                 }
                             }
                     }
@@ -131,7 +139,8 @@
             <span class="text-info">8-15%</span>,
             <span class="text-success">15-20%</span>,
             <span class="text-warning">20-25%</span>,
-            <span class="text-fuchsia">> 25%</span>
+            <span class="text-fuchsia">> 25%</span>,
+            <span class="text-primary">^^ Incorrect timeline data</span>
         </small>
     </div>
 </div>
@@ -223,6 +232,13 @@ dataCollectionSection =
             },
             afterInit: function() {
                 dataCollectionSection['{{componentId}}-{{sectionId}}-scheme_timeline']['flatpickr'].setDate(dataCollectionSectionForm['vars']['timeline']);
+
+                $('#{{componentId}}-{{sectionId}}-scheme_timeline-today').off();
+                $('#{{componentId}}-{{sectionId}}-scheme_timeline-today').click(function(e) {
+                    e.preventDefault();
+
+                    dataCollectionSectionForm['funcs']['browse']('{{links.url("mf/schemes/")}}');
+                });
             }
         },
         '{{componentId}}-{{sectionId}}-amc_ids'                             : {
@@ -335,8 +351,6 @@ dataCollectionSectionForm['funcs']['query'] = function() {
 
     if (dataCollectionSectionForm['vars']['today'] !== dataCollectionSectionForm['vars']['timeline']) {
         query += 'AND|start_date|lessthanequals|' + dataCollectionSectionForm['vars']['timeline'] + '&';
-        //eslint-disable-next-line
-        console.log(query);
     }
 
     dataCollection['{{componentId}}']['{{componentId}}-{{sectionId}}']['listOptions']['postParams']['conditions'] = query;
@@ -354,6 +368,12 @@ $('body').on('sectionWithListingLoaded', function() {
     });
 
     $('body').off('sectionWithListingLoaded');
+
+    $('#{{componentId}}-{{sectionId}}-filter-reset').click(function(e) {
+        e.preventDefault();
+
+        dataCollectionSectionForm['funcs']['browse']('{{links.url("mf/schemes")}}');
+    });
 });
 
 dataCollectionSectionForm['funcs']['browse'] = function(url) {

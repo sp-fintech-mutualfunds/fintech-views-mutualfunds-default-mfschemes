@@ -349,7 +349,9 @@ dataCollectionSectionForm['funcs']['query'] = function() {
         });
     }
 
-    if (dataCollectionSectionForm['vars']['today'] !== dataCollectionSectionForm['vars']['timeline']) {
+    if (dataCollectionSectionForm['vars']['timeline'] !== '' &&
+        dataCollectionSectionForm['vars']['today'] !== dataCollectionSectionForm['vars']['timeline']
+    ) {
         query += 'AND|start_date|lessthanequals|' + dataCollectionSectionForm['vars']['timeline'] + '&';
     }
 
@@ -357,6 +359,12 @@ dataCollectionSectionForm['funcs']['query'] = function() {
 
     dataCollectionSection['BazContentSectionWithListing']
         ._filterRunAjax(1, dataCollection['{{componentId}}']['{{componentId}}-{{sectionId}}']['listOptions']['datatable']['paginationCounters']['limit'], query);
+
+    if ($('#{{componentId}}-{{sectionId}}-filter-filters').find('[data-conditions=""]').length > 0) {
+        $('#{{componentId}}-{{sectionId}}-filter-filters').val(
+            $('#{{componentId}}-{{sectionId}}-filter-filters').find('[data-conditions=""]').val()
+        );
+    }
 }
 
 //We need to load flatpicker in the end after datatables. Else it will not load.
@@ -372,8 +380,26 @@ $('body').on('sectionWithListingLoaded', function() {
     $('#{{componentId}}-{{sectionId}}-filter-reset').click(function(e) {
         e.preventDefault();
 
+        dataCollection['env']['customConditions'] = [];
+
         dataCollectionSectionForm['funcs']['browse']('{{links.url("mf/schemes")}}');
     });
+
+    if (dataCollection['env']['customConditions']) {
+        $.each(dataCollection['env']['customConditions'], function(index, conditions) {
+            if (conditions[1] === 'amc_id') {
+                $('#{{componentId}}-{{sectionId}}-amc_ids').val(conditions[3]).trigger('change');
+            }
+            if (conditions[1] === 'category_id') {
+                $('#{{componentId}}-{{sectionId}}-category_ids').val(conditions[3]).trigger('change');
+            }
+        });
+    }
+});
+
+$('#{{componentId}}-{{sectionId}}-filter-filters').change(function() {
+    $('#{{componentId}}-{{sectionId}}-amc_ids').val(0).trigger('change');
+    $('#{{componentId}}-{{sectionId}}-category_ids').val(0).trigger('change');
 });
 
 dataCollectionSectionForm['funcs']['browse'] = function(url) {
